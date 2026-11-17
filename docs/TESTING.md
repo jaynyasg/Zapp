@@ -24,6 +24,12 @@ Playwright uses a production build, starts an isolated server on port 4173 and w
 
 `e2e/garden.spec.ts` creates a collection profile, places it in a named area, reloads the saved layout, creates/completes a linked overdue task, downloads a calendar file, verifies a suggested restock, adjusts inventory and confirms persistence after reload. Both browser journeys pass at the current production build. New area/material screenshots were inspected at desktop and 390px mobile widths. System notification delivery and imported calendar alarm delivery were not tested on physical devices.
 
+## Multi-site project coverage
+
+`tests/projects.test.js` covers workspace isolation, multi-site membership, date ordering, project/assignment versions, preventing removal of assigned sites, conflicting layout/task scope, legacy assignments, project task counts, inventory context and audit attribution. The complete backend/provider suite has 23 passing tests.
+
+`e2e/projects.spec.ts` creates two sites and one shared project, adds records/layouts/tasks/materials under site/project filters, checks cross-site separation, completes a project task, persists project status through reload and checks mobile overflow. Regression checks keep assignment errors visible and preserve/navigate existing unassigned record links under narrower filters. All three Chromium journeys and the production build pass. Desktop and mobile project screenshots are under `docs/screenshots`. No real-device notification, live AI or hosted deployment claims are added by this release.
+
 ## External checks
 
 The current Anthropic account rejected a live request for insufficient credit. Live draft quality and provider-specific successful response handling require a funded account and repeat smoke test. Never use confidential customer content as a test fixture without authorization.
@@ -32,4 +38,4 @@ The Docker image and GitHub-hosted workflow are provided but were not executed i
 
 ## Learning release coverage
 
-Twenty-one backend/provider test groups cover local username restrictions, lesson publication and progress, private conversations, assistant context, sanitized refusals, real JPEG observation validation, PDF signature checks, and both provider request formats. Successful external responses use fixtures; they do not establish live model quality. The browser journey additionally creates/completes a lesson, reloads progress, saves a synthetic camera frame, asserts camera tracks stop on navigation, checks disabled unfunded AI controls, and verifies the mobile assistant has no horizontal overflow. Browser camera input uses Chromium fake-device flags; no physical camera or microphone is accessed by tests. Both provider keys are cleared in the browser-test server.
+Twenty-three backend/provider test groups cover local username restrictions, lesson publication and progress, private conversations, assistant context, sanitized refusals, real JPEG observation validation, PDF signature checks, and both provider request formats. Successful external responses use fixtures; they do not establish live model quality. The browser journey additionally creates/completes a lesson, reloads progress, saves a synthetic camera frame, asserts camera tracks stop on navigation, checks disabled unfunded AI controls, and verifies the mobile assistant has no horizontal overflow. Browser camera input uses Chromium fake-device flags; no physical camera or microphone is accessed by tests. Both provider keys are cleared in the browser-test server.

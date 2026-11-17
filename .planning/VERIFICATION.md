@@ -1,5 +1,13 @@
 # MasterGrow verification
 
+## Multi-site projects — 2026-11-17
+
+- API tests first failed on missing site/project routes; browser tests first failed on missing Projects navigation. Implementation now passes both paths.
+- Backend verification covers tenant-owned sites/project references, date order, optimistic versions, assigned-site removal, conflicting linked scopes, additive legacy assignments, project task counts and audit attribution.
+- Browser regressions reproduced a dismissed assignment error, hidden legacy record links and a select resetting an existing linked record under a narrower filter. The fixes retain errors, clear filters when opening history, and retain existing selected options when editing.
+- Final checks: 23 backend/provider tests passed; TypeScript/production build passed; three Chromium journeys passed. Desktop and 390px mobile project screenshots reviewed; no page overflow. No new dependencies.
+- Documentation and requirement updates follow the established sequential GSD workflow and source verification. Site/project scopes are organizational filters within the workspace, not new permission boundaries. Task times remain device-local; background push, live AI funding and hosted deployment limits are unchanged.
+
 ## Observed evidence
 
 - `npm test`: eighteen test groups pass. Real Express/SQLite/filesystem operations, source signatures, auth/tenant/role denials, immutable approvals and assignment snapshots, logout, actual Sharp decoding and FFmpeg extraction, job recovery and error handling.

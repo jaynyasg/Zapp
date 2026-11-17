@@ -33,6 +33,7 @@ For development, run `npm run dev` and open http://127.0.0.1:5173. The Vite prox
 - See proactive reminders based on pending training, reviews and source processing issues.
 - Keep plant, seed-lot and material records in My collection, with dated photos, manual measurements and issue logs separate from lessons.
 - Manage named area layouts, linked task reminders, materials inventory and target-based restock suggestions inside My collection.
+- Organize multiple site locations and grow projects, including projects spanning several sites; filter collection records, areas, tasks and materials by site/project.
 - Use the cannabis-inspired Midnight Fieldwork dark interface on desktop and mobile.
 
 ## Enable AI

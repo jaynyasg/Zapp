@@ -1,0 +1,150 @@
+.scope-filters {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #14231a;
+  margin-bottom: 22px;
+}
+.scope-filters > svg {
+  flex-shrink: 0;
+  color: var(--lime);
+}
+.scope-filters > label {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+.scope-filters > p {
+  max-width: 205px;
+  color: var(--muted);
+  font-size: 11px;
+  margin: 15px 0 0;
+}
+.scope-assignment {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 12px 0 18px;
+}
+.scope-assignment > small {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.scope-assignment > .text-button {
+  font-size: 11px;
+}
+.projects-page > .garden-heading .garden-actions {
+  flex-shrink: 0;
+}
+.project-section-heading {
+  font-size: 22px;
+  margin: 32px 0 18px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.project-section-heading > span {
+  font-size: 12px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 3px 9px;
+}
+.site-card {
+  background:
+    radial-gradient(ellipse at top right, #273f2b, transparent 80%),
+    var(--paper);
+}
+.site-card > svg {
+  color: var(--lime);
+}
+.project-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  color: var(--muted);
+  font-size: 12px;
+  margin: 18px 0;
+}
+.project-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--lime);
+}
+.project-sites {
+  color: var(--lime);
+  font-size: 12px;
+}
+.project-progress {
+  font-size: 12px;
+  margin: 24px 0 12px;
+}
+.project-progress progress {
+  width: 100%;
+  height: 6px;
+  accent-color: var(--lime);
+  margin-top: 10px;
+}
+.project-progress progress::-webkit-progress-bar {
+  background: var(--line);
+  border-radius: 5px;
+}
+.project-progress progress::-webkit-progress-value {
+  background: var(--lime);
+  border-radius: 5px;
+}
+.project-site-picker {
+  margin: 20px 0 !important;
+}
+.project-site-picker legend {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.project-site-picker label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.project-site-picker input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--lime);
+}
+.projects-page .garden-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.projects-page .garden-actions button.primary {
+  color: var(--on-primary, #172014);
+}
+@media (max-width: 700px) {
+  .scope-filters {
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 16px;
+  }
+  .scope-filters > svg {
+    display: none;
+  }
+  .scope-filters > label {
+    flex: 1 1 100%;
+  }
+  .scope-filters > p {
+    max-width: none;
+    margin: 0;
+  }
+  .collection-sections button {
+    padding: 12px 8px;
+  }
+  .projects-page > .garden-heading .garden-actions {
+    margin: 0;
+  }
+}

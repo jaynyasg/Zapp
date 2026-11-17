@@ -1,5 +1,10 @@
 import { z } from "zod";
 import { now } from "./db.js";
+import {
+  organizationFields,
+  validateOrganization,
+  compatibleOrganization,
+} from "./projects.js";
 
 // Workspace management only. All deadlines, quantities and targets are user supplied.
 export function installGarden({ app, repo, base, get, save, parse, error }) {
@@ -44,6 +49,7 @@ export function installGarden({ app, repo, base, get, save, parse, error }) {
   app.post(`${base}/areas`, (req, res) => {
     const body = parse(
       z.object({
+        ...organizationFields,
         name,
         rows: z.number().int().min(1).max(12),
         columns: z.number().int().min(1).max(12),
@@ -51,6 +57,7 @@ export function installGarden({ app, repo, base, get, save, parse, error }) {
       }),
       req.body,
     );
+    validateOrganization(repo, req.wid, body, error);
     res
       .status(201)
       .json(save(req, "area", { ...body, version: 1 }, "area.created"));
@@ -89,6 +96,7 @@ export function installGarden({ app, repo, base, get, save, parse, error }) {
         throw error(409, "This placement changed. Reload before moving it.");
       if (body.areaId) {
         const area = checkLink(req, "area", body.areaId);
+        compatibleOrganization(specimen, area, error);
         if (
           body.row === undefined ||
           body.column === undefined ||
@@ -121,6 +129,7 @@ export function installGarden({ app, repo, base, get, save, parse, error }) {
     res.json(result);
   });
   const taskFields = {
+    ...organizationFields,
     title: name,
     notes,
     specimenId: link,
@@ -131,23 +140,27 @@ export function installGarden({ app, repo, base, get, save, parse, error }) {
     const body = parse(z.object(taskFields), req.body);
     checkLink(req, "specimen", body.specimenId);
     checkLink(req, "area", body.areaId);
-    res
-      .status(201)
-      .json(
-        save(
-          req,
-          "gardenTask",
-          {
-            ...body,
-            dueAt: new Date(body.dueAt).toISOString(),
-            status: "pending",
-            completedAt: null,
-            version: 1,
-            authorId: req.user.id,
-          },
-          "gardenTask.created",
-        ),
-      );
+    validateOrganization(repo, req.wid, body, error);
+    const taskPlant = checkLink(req, "specimen", body.specimenId),
+      taskArea = checkLink(req, "area", body.areaId);
+    compatibleOrganization(body, taskPlant, error);
+    compatibleOrganization(body, taskArea, error);
+    compatibleOrganization(taskPlant, taskArea, error);
+    res.status(201).json(
+      save(
+        req,
+        "gardenTask",
+        {
+          ...body,
+          dueAt: new Date(body.dueAt).toISOString(),
+          status: "pending",
+          completedAt: null,
+          version: 1,
+          authorId: req.user.id,
+        },
+        "gardenTask.created",
+      ),
+    );
   });
   app.patch(`${base}/garden-tasks/:rid`, (req, res) => {
     const record = get(req, "gardenTask");
@@ -167,6 +180,11 @@ export function installGarden({ app, repo, base, get, save, parse, error }) {
     checkLink(req, "specimen", body.specimenId);
     checkLink(req, "area", body.areaId);
     const updated = { ...record, ...body, version: record.version + 1 };
+    const taskPlant = checkLink(req, "specimen", updated.specimenId),
+      taskArea = checkLink(req, "area", updated.areaId);
+    compatibleOrganization(updated, taskPlant, error);
+    compatibleOrganization(updated, taskArea, error);
+    compatibleOrganization(taskPlant, taskArea, error);
     updated.dueAt = new Date(updated.dueAt).toISOString();
     updated.completedAt =
       updated.status === "completed" ? record.completedAt || now() : null;
@@ -234,12 +252,14 @@ export function installGarden({ app, repo, base, get, save, parse, error }) {
     specimenId: link,
   };
   const validateSupply = (req, body) => {
+    validateOrganization(repo, req.wid, body, error);
     if (body.targetQuantity < body.reorderAt)
       throw error(
         400,
         "Target quantity must be at least the restock threshold.",
       );
     const profile = checkLink(req, "specimen", body.specimenId);
+    compatibleOrganization(body, profile, error);
     if (profile && profile.kind !== "material")
       throw error(400, "Link inventory to a material profile.");
     if (
@@ -253,7 +273,10 @@ export function installGarden({ app, repo, base, get, save, parse, error }) {
       throw error(409, "This material already has an inventory record.");
   };
   app.post(`${base}/supplies`, (req, res) => {
-    const body = parse(z.object({ ...supplyFields, quantity }), req.body);
+    const body = parse(
+      z.object({ ...supplyFields, ...organizationFields, quantity }),
+      req.body,
+    );
     validateSupply(req, body);
     res
       .status(201)
@@ -263,7 +286,7 @@ export function installGarden({ app, repo, base, get, save, parse, error }) {
     const record = get(req, "supply");
     const body = parse(z.object({ ...supplyFields, version }), req.body);
     checkVersion(record, body.version);
-    validateSupply(req, body);
+    validateSupply(req, { ...record, ...body });
     if (body.unit !== record.unit)
       throw error(
         400,

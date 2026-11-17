@@ -14,3 +14,7 @@ Source-linked lessons, approved publication, private progress, PDF storage/AI in
 ## Integrated collection management — implemented
 
 Records, Areas, Tasks and Materials share My collection. Existing profiles link to layout positions, deadlines and inventory. Version checks protect collaborative updates; stock and placement changes preserve audit attribution. In-app alerts, opt-in browser notifications and calendar-alarm downloads are available. Background push and synchronized calendar integration remain future work.
+
+## Multi-site grow projects — implemented
+
+My collection now includes Projects, with multiple physical sites and projects spanning chosen locations. Sites/projects filter existing collection workflows, with explicit assignments and protections against conflicting links. Project task progress and lifecycle are independent of lessons. Location-specific permissions, background push and live AI funding remain separate future work.

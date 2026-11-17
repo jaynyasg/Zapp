@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { now } from "./db.js";
+import { organizationFields, validateOrganization } from "./projects.js";
 
 // Descriptive records only: no generated targets, diagnoses or growing advice.
 export function installCollection({
@@ -31,6 +32,7 @@ export function installCollection({
   app.post(`${base}/specimens`, (req, res) => {
     const body = parse(
       z.object({
+        ...organizationFields,
         name: short,
         kind: z.enum(["plant", "seed", "material"]),
         notes: z.string().max(4000).default(""),
@@ -39,6 +41,7 @@ export function installCollection({
       }),
       req.body,
     );
+    validateOrganization(repo, req.wid, body, error);
     if (Boolean(body.measurementLabel) !== Boolean(body.unit))
       throw error(
         400,

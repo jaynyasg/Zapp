@@ -11,6 +11,16 @@ import {
 import { api, formatDate, type Media } from "./types";
 import { Empty, Modal } from "./ui";
 import { Garden, type CollectionSection } from "./Garden";
+import {
+  Projects,
+  ScopeFilters,
+  ScopeAssignment,
+  matchesScope,
+  scopeBody,
+  type Scope,
+  type Organization,
+  type ScopedRecord,
+} from "./Projects";
 
 type Entry = {
   id: string;
@@ -26,7 +36,7 @@ type Entry = {
   resolutionNote: string;
   resolvedAt: string | null;
 };
-type Specimen = {
+type Specimen = ScopedRecord & {
   id: string;
   name: string;
   kind: "plant" | "seed" | "material";
@@ -182,7 +192,10 @@ export function Collection({
 }) {
   const [section, setSection] = useState<CollectionSection>(() => {
     const saved = sessionStorage.getItem(`collection-section:${root}`);
-    return saved === "areas" || saved === "tasks" || saved === "materials"
+    return saved === "areas" ||
+      saved === "tasks" ||
+      saved === "materials" ||
+      saved === "projects"
       ? saved
       : "records";
   });
@@ -190,6 +203,11 @@ export function Collection({
     setSection(next);
     sessionStorage.setItem(`collection-section:${root}`, next);
   }
+  const [scope, setScope] = useState<Scope>({ siteId: "", projectId: "" });
+  const [organization, setOrganization] = useState<Organization>({
+    sites: [],
+    projects: [],
+  });
   const [profiles, setProfiles] = useState<Specimen[]>([]),
     [selected, setSelected] = useState(""),
     [detail, setDetail] = useState<Specimen | null>(null),
@@ -204,6 +222,11 @@ export function Collection({
     [left, setLeft] = useState(""),
     [right, setRight] = useState("");
   useEffect(() => {
+    const refresh = () => setRevision((v) => v + 1);
+    window.addEventListener("collection-changed", refresh);
+    return () => window.removeEventListener("collection-changed", refresh);
+  }, []);
+  useEffect(() => {
     const c = new AbortController();
     setLoading(true);
     setDetail(null);
@@ -212,12 +235,16 @@ export function Collection({
       selected
         ? api<Specimen>(root + `/specimens/${selected}`, { signal: c.signal })
         : Promise.resolve(null),
+      api<Organization>(root + "/organization", { signal: c.signal }),
     ])
-      .then(([list, item]) => {
+      .then(([list, item, org]) => {
         if (c.signal.aborted) return;
+        const visible = list.filter((p) => matchesScope(p, scope));
         setProfiles(list);
-        setDetail(item);
-        if (!selected && list.length) setSelected(list[0].id);
+        setOrganization(org);
+        setDetail(item && matchesScope(item, scope) ? item : null);
+        if (!visible.some((p) => p.id === selected))
+          setSelected(visible[0]?.id || "");
       })
       .catch((e) => {
         if (e.name !== "AbortError") setError(e.message);
@@ -226,7 +253,8 @@ export function Collection({
         if (!c.signal.aborted) setLoading(false);
       });
     return () => c.abort();
-  }, [root, selected, revision]);
+  }, [root, selected, revision, scope.siteId, scope.projectId]);
+  const visibleProfiles = profiles.filter((p) => matchesScope(p, scope));
   function select(id: string) {
     setSelected(id);
     setFile(null);
@@ -244,7 +272,7 @@ export function Collection({
     try {
       const p = await api<Specimen>(
         root + "/specimens",
-        json(Object.fromEntries(form)),
+        json({ ...Object.fromEntries(form), ...scopeBody(scope) }),
       );
       setCreate(false);
       select(p.id);
@@ -364,25 +392,51 @@ export function Collection({
           Add to collection
         </button>
       </header>
+      <ScopeFilters
+        data={organization}
+        scope={scope}
+        disabled={busy}
+        onChange={(next) => {
+          setScope(next);
+          select("");
+        }}
+      />
       <nav className="collection-sections" aria-label="Collection sections">
-        {(["records", "areas", "tasks", "materials"] as const).map((s) => (
-          <button
-            key={s}
-            aria-current={section === s ? "page" : undefined}
-            disabled={busy}
-            onClick={() => changeSection(s)}
-          >
-            {s.charAt(0).toUpperCase() + s.slice(1)}
-          </button>
-        ))}
+        {(["records", "projects", "areas", "tasks", "materials"] as const).map(
+          (s) => (
+            <button
+              key={s}
+              aria-current={section === s ? "page" : undefined}
+              disabled={busy}
+              onClick={() => changeSection(s)}
+            >
+              {s.charAt(0).toUpperCase() + s.slice(1)}
+            </button>
+          ),
+        )}
       </nav>
-      {section !== "records" && (
+      {section === "projects" && (
+        <Projects
+          root={root}
+          data={organization}
+          onSaved={() => setRevision((v) => v + 1)}
+          onOpen={(next) => {
+            setScope(next);
+            select("");
+            changeSection("records");
+          }}
+        />
+      )}
+      {section !== "records" && section !== "projects" && (
         <Garden
           root={root}
           userId={userId}
           section={section}
           profiles={profiles}
+          scope={scope}
+          organization={organization}
           onOpen={(id) => {
+            setScope({ siteId: "", projectId: "" });
             select(id);
             changeSection("records");
           }}
@@ -399,7 +453,7 @@ export function Collection({
             {message}
           </p>
         )}
-        {!profiles.length && !loading ? (
+        {!visibleProfiles.length && !loading ? (
           <Empty
             title="Start with what’s in front of you"
             action={
@@ -415,9 +469,9 @@ export function Collection({
           <div className="collection-layout">
             <aside className="collection-index">
               <h2>
-                My collection <small>{profiles.length}</small>
+                My collection <small>{visibleProfiles.length}</small>
               </h2>
-              {profiles.map((p) => (
+              {visibleProfiles.map((p) => (
                 <button
                   key={p.id}
                   disabled={busy}
@@ -452,6 +506,13 @@ export function Collection({
                   <header className="specimen-header">
                     <span className="specimen-kind">{detail.kind} record</span>
                     <h2>{detail.name}</h2>
+                    <ScopeAssignment
+                      root={root}
+                      type="specimen"
+                      record={detail}
+                      data={organization}
+                      onSaved={() => setRevision((v) => v + 1)}
+                    />
                     <p className="preserve">{detail.notes}</p>
                     <div className="record-totals">
                       <span>

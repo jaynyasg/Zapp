@@ -90,3 +90,20 @@ These routes also use `/api/workspaces/:wid`. All workspace members can manage l
 | POST | /supplies/:id/adjustments | version, nonzero signed delta, required note; stock remains within 0–1 billion; returns updated supply |
 
 Current versions are required for updates (409 on stale writes). A plant or seed has at most one active placement; occupied destinations return 409, invalid cells or foreign links return 400. A material profile may link to one inventory record. All stock quantities and targets are bounded to 0–1 billion; targets must be at least the threshold. Adjustment results and suggested quantities are rounded to six decimals. Stock adjustments store delta, resulting quantity, note and actor name, with a separate audit event attributed to the user ID. Restock entries include `suggestedQuantity = targetQuantity - quantity` whenever quantity is at or below the threshold.
+
+## Sites and projects
+
+All routes use `/api/workspaces/:wid` and workspace membership. They do not create separate per-site permission boundaries.
+
+| Method | Suffix | Contract |
+| --- | --- | --- |
+| GET | /organization | sites and projects with recordCount, areaCount, supplyCount, taskCount, completedTasks and dueTasks |
+| POST | /sites | name; optional location (up to 500 characters), notes; returns version 1 |
+| PATCH | /sites/:id | name, version; optional location/notes; full detail replacement |
+| POST | /projects | name, siteIds (1–100 workspace sites); optional notes, status, startDate, targetDate |
+| PATCH | /projects/:id | same project fields plus version; rejects removing any site still used by assigned project records |
+| PUT | /organization/:type/:id | siteId/projectId UUID or null; assignment version (0 before first update); type is specimen, area, gardenTask or supply |
+
+New specimen, area, garden-task and supply requests also accept optional nullable siteId/projectId. Every referenced site/project must belong to the workspace, and a supplied site must be in the supplied project's siteIds. Projects default to planned; allowed statuses are planned/active/paused/completed. Dates are optional YYYY-MM-DD values; target cannot precede start. Project completion stores completedAt; reopening clears it. It never completes tasks automatically.
+
+Assignment responses contain organizationVersion. A stale assignment version returns 409. Assignments preserve unrelated record content, increment the operational version when present and audit atomically. Explicitly conflicting site/project assignments between placed plants/areas, tasks/their links, and supplies/material profiles return 409. Existing unassigned links remain compatible. Task count excludes cancelled tasks; due count includes only pending deadlines at or before now. Scope filters are client-side convenience; authorized callers can read their full workspace.

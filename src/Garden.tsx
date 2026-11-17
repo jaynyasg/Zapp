@@ -9,10 +9,19 @@ import {
 } from "lucide-react";
 import { api } from "./types";
 import { Empty, Modal } from "./ui";
+import {
+  ScopeAssignment,
+  matchesScope,
+  scopeBody,
+  type Scope,
+  type Organization,
+  type ScopedRecord,
+} from "./Projects";
 
-export type CollectionSection = "records" | "areas" | "tasks" | "materials";
-type Profile = { id: string; name: string; kind: string };
-type Area = {
+export type CollectionSection =
+  "records" | "areas" | "tasks" | "materials" | "projects";
+type Profile = ScopedRecord & { id: string; name: string; kind: string };
+type Area = ScopedRecord & {
   id: string;
   name: string;
   rows: number;
@@ -28,7 +37,7 @@ type Placement = {
   column: number | null;
   version: number;
 };
-type Task = {
+type Task = ScopedRecord & {
   id: string;
   title: string;
   notes: string;
@@ -39,7 +48,7 @@ type Task = {
   version: number;
   completedAt: string | null;
 };
-type Supply = {
+type Supply = ScopedRecord & {
   id: string;
   name: string;
   unit: string;
@@ -190,14 +199,18 @@ export function Garden({
   section,
   profiles,
   onOpen,
+  scope,
+  organization,
 }: {
   root: string;
   userId: string;
   section: CollectionSection;
   profiles: Profile[];
   onOpen: (id: string) => void;
+  scope: Scope;
+  organization: Organization;
 }) {
-  const [data, setData] = useState<Snapshot | null>(null),
+  const [rawData, setData] = useState<Snapshot | null>(null),
     [revision, setRevision] = useState(0),
     [error, setError] = useState(""),
     [message, setMessage] = useState(""),
@@ -214,6 +227,19 @@ export function Garden({
   const [notify, setNotify] = useState(
     () => localStorage.getItem(preferenceKey(root, userId)) === "on",
   );
+  const data = rawData
+    ? {
+        ...rawData,
+        areas: rawData.areas.filter((r) => matchesScope(r, scope)),
+        tasks: rawData.tasks.filter((r) => matchesScope(r, scope)),
+        supplies: rawData.supplies.filter((r) => matchesScope(r, scope)),
+        restock: rawData.restock.filter((r) => matchesScope(r, scope)),
+      }
+    : null;
+  useEffect(() => {
+    setAreaId("");
+    setPlantId("");
+  }, [scope.siteId, scope.projectId]);
   useEffect(() => {
     const c = new AbortController();
     api<Snapshot>(root + "/garden", { signal: c.signal })
@@ -227,7 +253,12 @@ export function Garden({
   }, [root, revision]);
   useEffect(() => {
     const timer = setInterval(() => setRevision((v) => v + 1), 30000);
-    return () => clearInterval(timer);
+    const refresh = () => setRevision((v) => v + 1);
+    window.addEventListener("collection-changed", refresh);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("collection-changed", refresh);
+    };
   }, []);
   async function mutate(
     path: string,
@@ -257,6 +288,7 @@ export function Garden({
   const placement = data?.placements.find((p) => p.specimenId === plantId);
   const profileName = (id: string | null) =>
     profiles.find((p) => p.id === id)?.name || "Collection record";
+  const visibleProfiles = profiles.filter((p) => matchesScope(p, scope));
   function open(kind: "area" | "task" | "supply" | "stock") {
     setDialog(kind);
     setError("");
@@ -274,7 +306,11 @@ export function Garden({
           ...v,
           ...(editArea
             ? { version: editArea.version }
-            : { rows: Number(v.rows), columns: Number(v.columns) }),
+            : {
+                rows: Number(v.rows),
+                columns: Number(v.columns),
+                ...scopeBody(scope),
+              }),
         },
         editArea ? "PATCH" : "POST",
         "Area saved.",
@@ -287,7 +323,7 @@ export function Garden({
           specimenId: v.specimenId || null,
           areaId: v.areaId || null,
           dueAt: new Date(String(v.dueAt)).toISOString(),
-          ...(editTask ? { version: editTask.version } : {}),
+          ...(editTask ? { version: editTask.version } : scopeBody(scope)),
         },
         editTask ? "PATCH" : "POST",
         "Task saved.",
@@ -302,7 +338,7 @@ export function Garden({
           specimenId: v.specimenId || null,
           ...(editSupply
             ? { version: editSupply.version }
-            : { quantity: Number(v.quantity) }),
+            : { quantity: Number(v.quantity), ...scopeBody(scope) }),
         },
         editSupply ? "PATCH" : "POST",
         "Material saved.",
@@ -416,6 +452,13 @@ export function Garden({
                   {area.rows} rows × {area.columns} columns
                 </p>
                 <p className="preserve">{area.notes}</p>
+                <ScopeAssignment
+                  root={root}
+                  type="area"
+                  record={area}
+                  data={organization}
+                  onSaved={() => setRevision((v) => v + 1)}
+                />
                 <button
                   className="text-button"
                   onClick={() => {
@@ -435,7 +478,11 @@ export function Garden({
                   >
                     <option value="">Choose a record</option>
                     {profiles
-                      .filter((p) => p.kind !== "material")
+                      .filter(
+                        (p) =>
+                          p.kind !== "material" &&
+                          (matchesScope(p, scope) || p.id === plantId),
+                      )
                       .map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.name}
@@ -468,7 +515,7 @@ export function Garden({
                     Remove from layout
                   </button>
                 )}
-                {!profiles.some((p) => p.kind !== "material") && (
+                {!visibleProfiles.some((p) => p.kind !== "material") && (
                   <p>Add a plant or seed in Records first.</p>
                 )}
               </aside>
@@ -636,6 +683,13 @@ export function Garden({
                           : "Cancelled"}
                     </span>
                     <h3>{t.title}</h3>
+                    <ScopeAssignment
+                      root={root}
+                      type="gardenTask"
+                      record={t}
+                      data={organization}
+                      onSaved={() => setRevision((v) => v + 1)}
+                    />
                     <time dateTime={t.dueAt}>{dateLabel(t.dueAt)}</time>
                     <p className="preserve">{t.notes}</p>
                     <div className="task-links">
@@ -798,6 +852,13 @@ export function Garden({
                     {s.quantity <= s.reorderAt ? "Restock needed" : "In stock"}
                   </span>
                   <h3>{s.name}</h3>
+                  <ScopeAssignment
+                    root={root}
+                    type="supply"
+                    record={s}
+                    data={organization}
+                    onSaved={() => setRevision((v) => v + 1)}
+                  />
                   <strong className="stock-count">
                     {s.quantity} {s.unit} on hand
                   </strong>
@@ -967,22 +1028,33 @@ export function Garden({
                       defaultValue={editTask?.specimenId || ""}
                     >
                       <option value="">Whole collection</option>
-                      {profiles.map((p) => (
-                        <option value={p.id} key={p.id}>
-                          {p.name}
-                        </option>
-                      ))}
+                      {profiles
+                        .filter(
+                          (p) =>
+                            matchesScope(p, scope) ||
+                            p.id === editTask?.specimenId,
+                        )
+                        .map((p) => (
+                          <option value={p.id} key={p.id}>
+                            {p.name}
+                          </option>
+                        ))}
                     </select>
                   </label>
                   <label>
                     Linked area
                     <select name="areaId" defaultValue={editTask?.areaId || ""}>
                       <option value="">No specific area</option>
-                      {data.areas.map((a) => (
-                        <option value={a.id} key={a.id}>
-                          {a.name}
-                        </option>
-                      ))}
+                      {rawData!.areas
+                        .filter(
+                          (a) =>
+                            matchesScope(a, scope) || a.id === editTask?.areaId,
+                        )
+                        .map((a) => (
+                          <option value={a.id} key={a.id}>
+                            {a.name}
+                          </option>
+                        ))}
                     </select>
                   </label>
                   <label>
@@ -1071,7 +1143,12 @@ export function Garden({
                     >
                       <option value="">Inventory only</option>
                       {profiles
-                        .filter((p) => p.kind === "material")
+                        .filter(
+                          (p) =>
+                            p.kind === "material" &&
+                            (matchesScope(p, scope) ||
+                              p.id === editSupply?.specimenId),
+                        )
                         .map((p) => (
                           <option value={p.id} key={p.id}>
                             {p.name}
