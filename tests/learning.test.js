@@ -67,6 +67,7 @@ test("lessons require approved procedures; progress is private, validated and pe
   const list = (await owner.get(`/api/workspaces/${wid}/lessons`).expect(200))
     .body;
   assert.ok(list[0].progress.completedAt);
+  assert.ok(list[0].progress.updatedAt);
   await outsider
     .post("/api/auth/register")
     .send({
@@ -81,6 +82,63 @@ test("lessons require approved procedures; progress is private, validated and pe
     .send({ completed: [0] })
     .expect(403);
   assert.equal(repo.list(wid, "lesson-progress")[0].userId, u.body.id);
+});
+test("ordinary learners resume their own partial progress after signing in again", async () => {
+  const learner = request.agent(app);
+  await learner
+    .post("/api/auth/register")
+    .send({
+      name: "Learner",
+      email: "learner-progress@test.com",
+      password: "learner-progress-passphrase",
+    })
+    .expect(201);
+  await owner
+    .post(`/api/workspaces/${wid}/members`)
+    .send({ email: "learner-progress@test.com", role: "member" })
+    .expect(201);
+  const root = `/api/workspaces/${wid}/lessons`;
+  assert.equal((await learner.get(root).expect(200)).body[0].progress, null);
+  await learner
+    .put(`${root}/${lesson.id}/progress`)
+    .send({ completed: [0] })
+    .expect(200);
+  await learner.post("/api/auth/logout").expect(200);
+  const freshSession = request.agent(app);
+  await freshSession
+    .post("/api/auth/login")
+    .send({
+      email: "learner-progress@test.com",
+      password: "learner-progress-passphrase",
+    })
+    .expect(200);
+  const resumed = (await freshSession.get(root).expect(200)).body[0].progress;
+  assert.deepEqual(resumed.completed, [0]);
+  assert.equal(resumed.completedAt, null);
+  assert.ok(resumed.updatedAt);
+  const finished = (
+    await freshSession
+      .put(`${root}/${lesson.id}/progress`)
+      .send({ completed: [0, 1] })
+      .expect(200)
+  ).body;
+  assert.ok(finished.completedAt);
+  const repeated = (
+    await freshSession
+      .put(`${root}/${lesson.id}/progress`)
+      .send({ completed: [0, 1] })
+      .expect(200)
+  ).body;
+  assert.equal(repeated.completedAt, finished.completedAt);
+  await freshSession
+    .put(`${root}/${lesson.id}/progress`)
+    .send({ completed: [0] })
+    .expect(200);
+  assert.equal(
+    (await freshSession.get(root).expect(200)).body[0].progress.completedAt,
+    null,
+  );
+  assert.ok((await owner.get(root).expect(200)).body[0].progress.completedAt);
 });
 test("assistant reports missing provider without fabricated replies; live checks require approved sources", async () => {
   await owner

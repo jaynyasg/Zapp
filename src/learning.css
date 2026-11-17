@@ -444,6 +444,50 @@ progress::-webkit-progress-value {
 .lesson-player > p {
   color: var(--muted);
 }
+.learner-progress {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin: 20px 0;
+  background: var(--paper);
+}
+.progress-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.progress-summary span,
+.learner-progress > p {
+  font-size: 12px;
+  color: var(--muted);
+}
+.learner-progress > p {
+  margin: 5px 0 0;
+}
+.learner-progress.is-complete {
+  border-color: #485e35;
+}
+.lesson-completion {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #485e35;
+}
+.lesson-completion > svg,
+.lesson-completion h3 {
+  color: var(--lime);
+}
+.lesson-completion h3 {
+  margin: 0 0 6px;
+}
+.lesson-completion p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
 .lesson-steps {
   list-style: none;
   margin: 24px 0;

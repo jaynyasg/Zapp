@@ -10,7 +10,7 @@ The durable worker produces a source-cited procedure draft and a linked lesson d
 
 Review the procedure, correct its evidence, submit it, and have an owner approve it. In Learning studio, select the draft and publish. Publishing copies the approved procedure into an immutable lesson. Owners and reviewers can also create a published lesson from an existing approved procedure. Revising an approved procedure creates a new source version and can produce a new lesson; old lessons and progress retain their original content.
 
-Learners check off steps and see saved progress after reload. Reflection questions are self-study, not automatically graded. Completion records acknowledgement, not practical competence or certification. Draft lessons are hidden from members.
+Learners check off steps to save progress automatically to their own account. The lesson player shows saving/saved feedback and a completion percentage. Returning to Learning studio reopens the most recently saved lesson, including after signing in again or using another browser. Completing every step shows a Completed label and a Lesson completed confirmation with its date and time. Unchecking a step returns the lesson to in progress. Failed saves restore the prior displayed progress and show an explicit retry message. Reflection questions are self-study, not automatically graded. Completion records acknowledgement, not practical competence or certification. Draft lessons are hidden from members.
 
 ## Mobile capture and guided practice
 

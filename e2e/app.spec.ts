@@ -89,10 +89,34 @@ test("new account can preserve notes, upload evidence and approve a procedure", 
   ).toBeVisible();
   await page.getByRole("checkbox", { name: /STEP 01/ }).check();
   await expect(page.getByText("1 of 2 reviewed")).toBeVisible();
+  await expect(page.getByText("Progress saved automatically")).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("checkbox", { name: /STEP 01/ })).toBeChecked();
+  await expect(page.getByText("50% complete")).toBeVisible();
+  await page.route("**/lessons/*/progress", (route) =>
+    route.fulfill({
+      status: 503,
+      json: { error: "Temporary connection issue" },
+    }),
+  );
+  await page.getByRole("checkbox", { name: /STEP 02/ }).click();
+  await expect(page.getByRole("alert")).toContainText(
+    "Progress was not confirmed saved",
+  );
+  await expect(
+    page.getByRole("checkbox", { name: /STEP 02/ }),
+  ).not.toBeChecked();
+  await page.unroute("**/lessons/*/progress");
   await page.getByRole("checkbox", { name: /STEP 02/ }).check();
   await expect(page.getByText("Completed", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Lesson completed" }),
+  ).toBeVisible();
   await page.reload();
   await expect(page.getByText("Completed", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Lesson completed" }),
+  ).toBeVisible();
   await page.screenshot({
     path: "docs/screenshots/lessons-desktop.png",
     fullPage: true,

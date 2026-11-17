@@ -136,6 +136,7 @@ export function installLearning({
           lessonId: l.id,
           userId: req.user.id,
           completed: unique,
+          updatedAt: now(),
           completedAt:
             unique.length === l.steps.length ? old?.completedAt || now() : null,
         },

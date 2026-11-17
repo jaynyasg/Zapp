@@ -55,3 +55,5 @@ All paths below share the workspace prefix and membership checks above.
 | POST | /observe | procedureId, zero-based step, image (JPEG data URL, max 220,000 characters); approved source required |
 
 Observation response: allowed, reply, observations[], uncertainties[], checkedAt. Frames are not persisted. Chat and observations share 25 requests per five minutes per user and one concurrent request. Provider setup/funding failures return 503 with sanitized text. PDF originals download as attachments. Analysis produces media.lessonId alongside media.procedureId.
+
+Lesson progress responses include completed step indices, updatedAt (last save) and completedAt (null until all steps are checked). Repeated completion preserves the completion date; unchecking a step clears completion. Progress remains scoped to the authenticated user.

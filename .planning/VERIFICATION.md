@@ -2,7 +2,7 @@
 
 ## Observed evidence
 
-- `npm test`: sixteen test groups pass. Real Express/SQLite/filesystem operations, source signatures, auth/tenant/role denials, immutable approvals and assignment snapshots, logout, actual Sharp decoding and FFmpeg extraction, job recovery and error handling.
+- `npm test`: seventeen test groups pass. Real Express/SQLite/filesystem operations, source signatures, auth/tenant/role denials, immutable approvals and assignment snapshots, logout, actual Sharp decoding and FFmpeg extraction, job recovery and error handling.
 - `npm run build`: TypeScript checking and production Vite build pass.
 - `npm run test:e2e`: Chromium journey passes registration, workspace onboarding, journal persistence after reload, private text upload, draft/review/approval, Markdown download, training assignment and self acknowledgement, second empty workspace, mobile overflow/navigation checks.
 - `npm audit`: zero vulnerabilities after updating Sharp to 0.35.5.
@@ -42,3 +42,7 @@ Fund the provider account and verify output quality on non-sensitive general ope
 - Source and docs reviewed sequentially in main thread. The design consultation used user-authorized recommended defaults; no outside-voice review claimed.
 
 Design artifacts are under C:/Users/jayny/.gstack/projects/jaynyasg-Zapp/designs/midnight-fieldwork. Live generation and visual-guidance accuracy are not claimed: no OpenAI key configured; earlier Anthropic balance insufficient.
+
+## Learner progress refinement
+
+Verified ordinary member progress persists across logout and a new session, stays independent of another learner, and records stable completion timestamps. The studio reopens the most recently saved lesson and displays saving feedback, percentage and a dated completion confirmation. Browser coverage includes partial-progress reload, completion reload, and failed-save rollback with an explicit error.

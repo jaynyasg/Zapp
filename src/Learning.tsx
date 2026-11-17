@@ -33,7 +33,11 @@ type Lesson = {
   procedureId: string;
   procedureVersion: number;
   sourceId?: string;
-  progress?: { completed: number[]; completedAt: string | null };
+  progress?: {
+    completed: number[];
+    completedAt: string | null;
+    updatedAt?: string;
+  };
 };
 type Signal = { id: string; title: string; detail: string; page: string };
 type Message = { role: "user" | "assistant"; text: string; at: string };
@@ -120,7 +124,28 @@ export function Lessons({
     [busy, setBusy] = useState(false),
     [loading, setLoading] = useState(true);
   const reload = useCallback(async () => {
-    setLessons(await api<Lesson[]>(root + "/lessons"));
+    const next = await api<Lesson[]>(root + "/lessons");
+    setLessons(next);
+    setSelected((current) => {
+      if (next.some((l) => l.id === current)) return current;
+      const recent = [...next]
+        .filter((l) => l.progress)
+        .sort((a, b) =>
+          (
+            b.progress?.updatedAt ||
+            b.progress?.completedAt ||
+            ""
+          ).localeCompare(
+            a.progress?.updatedAt || a.progress?.completedAt || "",
+          ),
+        );
+      return (
+        recent[0]?.id ||
+        next.find((l) => l.status === "published")?.id ||
+        next[0]?.id ||
+        ""
+      );
+    });
   }, [root]);
   useEffect(() => {
     void reload()
@@ -128,6 +153,30 @@ export function Lessons({
       .finally(() => setLoading(false));
   }, [reload]);
   const lesson = lessons.find((l) => l.id === selected);
+  async function saveProgress(current: Lesson, completed: number[]) {
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    const update = (progress: Lesson["progress"]) =>
+      setLessons((all) =>
+        all.map((l) => (l.id === current.id ? { ...l, progress } : l)),
+      );
+    update({ completed, completedAt: null });
+    try {
+      const saved = await api<NonNullable<Lesson["progress"]>>(
+        root + `/lessons/${current.id}/progress`,
+        post({ completed }, "PUT"),
+      );
+      update(saved);
+    } catch (e) {
+      update(current.progress);
+      setError(
+        `Progress was not confirmed saved. Please try again. ${(e as Error).message}`,
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
   async function mutate(fn: () => Promise<unknown>) {
     setBusy(true);
     setError("");
@@ -225,6 +274,7 @@ export function Lessons({
                   {l.steps.length} steps · source v{l.procedureVersion}
                 </p>
                 <progress
+                  aria-label={`${l.title} progress`}
                   value={l.progress?.completed.length || 0}
                   max={l.steps.length || 1}
                 />
@@ -246,6 +296,62 @@ export function Lessons({
                     : "DRAFT · NOT READY FOR TRAINING"}
                 </span>
                 <h2>{lesson.title}</h2>
+                {lesson.status === "published" && (
+                  <section
+                    className={
+                      "learner-progress " +
+                      (lesson.progress?.completedAt ? "is-complete" : "")
+                    }
+                    aria-label="Your lesson progress"
+                  >
+                    <div className="progress-summary">
+                      <strong>
+                        {Math.round(
+                          ((lesson.progress?.completed.length || 0) /
+                            Math.max(lesson.steps.length, 1)) *
+                            100,
+                        )}
+                        % complete
+                      </strong>
+                      <span>
+                        {lesson.progress?.completed.length || 0} /{" "}
+                        {lesson.steps.length} steps
+                      </span>
+                    </div>
+                    <progress
+                      aria-label="Current lesson completion"
+                      value={lesson.progress?.completed.length || 0}
+                      max={lesson.steps.length || 1}
+                    />
+                    <p role="status">
+                      {busy
+                        ? "Saving progress…"
+                        : error
+                          ? "Progress needs attention. Check the message above."
+                          : lesson.progress
+                            ? "Progress saved automatically"
+                            : "Check off each step to save your progress automatically."}
+                    </p>
+                    {lesson.progress?.completedAt && !busy && (
+                      <div className="lesson-completion">
+                        <Check size={24} />
+                        <div>
+                          <h3>Lesson completed</h3>
+                          <p>
+                            Completed on{" "}
+                            {new Date(
+                              lesson.progress.completedAt,
+                            ).toLocaleString(undefined, {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
+                            . Your progress is saved to your account.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </section>
+                )}
                 <p>{lesson.summary}</p>
                 {lesson.sourceId && (
                   <a
@@ -290,25 +396,7 @@ export function Lessons({
                             );
                             if (e.target.checked) completed.add(i);
                             else completed.delete(i);
-                            setLessons((all) =>
-                              all.map((l) =>
-                                l.id === lesson.id
-                                  ? {
-                                      ...l,
-                                      progress: {
-                                        completed: [...completed],
-                                        completedAt: null,
-                                      },
-                                    }
-                                  : l,
-                              ),
-                            );
-                            void mutate(() =>
-                              api(
-                                root + `/lessons/${lesson.id}/progress`,
-                                post({ completed: [...completed] }, "PUT"),
-                              ),
-                            );
+                            void saveProgress(lesson, [...completed]);
                           }}
                         />
                         <span>
