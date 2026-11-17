@@ -31,7 +31,8 @@ For development, run `npm run dev` and open http://127.0.0.1:5173. The Vite prox
 - Capture phone/USB camera photos, import scanner PDFs, and opt into sampled visual practice guidance.
 - Ask a private text assistant about reviewed workspace material, with optional browser dictation and spoken replies.
 - See proactive reminders based on pending training, reviews and source processing issues.
-- Use the Midnight Fieldwork dark interface on desktop and mobile.
+- Keep plant, seed-lot and material records in My collection, with dated photos, manual measurements and issue logs separate from lessons.
+- Use the cannabis-inspired Midnight Fieldwork dark interface on desktop and mobile.
 
 ## Enable AI
 

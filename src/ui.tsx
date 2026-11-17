@@ -1,11 +1,11 @@
 import { useEffect, useRef, type ReactNode } from "react";
-import { Sprout, X, ArrowUpRight, FolderOpen } from "lucide-react";
+import { Cannabis, X, ArrowUpRight, FolderOpen } from "lucide-react";
 import { labels } from "./types";
 export function Brand() {
   return (
     <div className="brand">
       <span className="brand-icon">
-        <Sprout size={25} />
+        <Cannabis size={29} />
       </span>
       <span>
         MasterGrow<span className="brand-dot">.</span>

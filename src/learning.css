@@ -1,6 +1,6 @@
 /* Midnight Fieldwork: functional depth, clear contrast, restrained motion. */
 .sidebar {
-  background: #10161a;
+  background: #0f1b14;
   border-right: 1px solid var(--line);
 }
 .primary {
@@ -8,7 +8,7 @@
   color: #172014;
 }
 .primary:hover {
-  background: #e2ff9a;
+  background: #d3edab;
 }
 .secondary:hover,
 .icon-button:hover,
@@ -37,7 +37,7 @@
   color: var(--lime);
 }
 .topbar {
-  background: #0d1115;
+  background: #0d1510;
 }
 .sidebar-tip {
   border: 1px solid var(--line);
@@ -111,7 +111,7 @@
 .engine-coordinate {
   top: 0;
   right: 0;
-  background: #0d1115;
+  background: #0d1510;
   padding: 5px;
 }
 .engine-foot {
@@ -124,7 +124,7 @@
 .engine-card {
   position: absolute;
   width: 260px;
-  background: #1b252c;
+  background: #1d3023;
   border: 1px solid #42515b;
   border-radius: 10px;
   padding: 18px 18px 18px 52px;
@@ -172,7 +172,7 @@
 .engine-card.learning {
   top: 140px;
   right: 3px;
-  background: #d4f675;
+  background: #bddf88;
   color: #182016;
   border-color: #e0ff98;
   transform: rotate(4deg);
@@ -195,7 +195,7 @@
   z-index: 3;
 }
 .stats {
-  background: #131a1f;
+  background: #132219;
 }
 .stat strong {
   font-family: var(--display);
@@ -207,10 +207,10 @@
   color: var(--lime);
 }
 .stat:hover {
-  background: #202b31;
+  background: #22372a;
 }
 .media-placeholder {
-  background: #202b31;
+  background: #22372a;
 }
 .badge {
   background: #283139;
@@ -220,7 +220,7 @@
 .badge-approved,
 .badge-published {
   background: #243722;
-  color: #d4f675;
+  color: #bddf88;
   border-color: #485e35;
 }
 .badge-review,
@@ -250,7 +250,7 @@
 .callout,
 .notice,
 .evidence-gaps {
-  background: #202b31;
+  background: #22372a;
   border: 1px solid #43515a;
   color: var(--ink);
   border-radius: 8px;
@@ -438,7 +438,7 @@ progress::-webkit-progress-value {
   padding: 28px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: #131a1f;
+  background: #132219;
   min-width: 0;
 }
 .lesson-player > p {
@@ -527,7 +527,7 @@ progress::-webkit-progress-value {
   border: 1px solid var(--line);
   border-radius: 12px;
   overflow: hidden;
-  background: #131a1f;
+  background: #132219;
 }
 .chat-panel > header {
   padding: 24px;
@@ -731,7 +731,7 @@ progress::-webkit-progress-value {
   font-size: 10px;
   letter-spacing: 1px;
   padding: 8px 10px;
-  background: #0d1115df;
+  background: #0d1510df;
   border-radius: 4px;
 }
 .camera-stop {
@@ -742,7 +742,7 @@ progress::-webkit-progress-value {
 .viewfinder {
   position: absolute;
   inset: 25% 20%;
-  border: 1px solid #d4f675a0;
+  border: 1px solid #bddf88a0;
   pointer-events: none;
 }
 .capture-controls {

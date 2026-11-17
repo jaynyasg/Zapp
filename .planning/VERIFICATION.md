@@ -2,7 +2,7 @@
 
 ## Observed evidence
 
-- `npm test`: seventeen test groups pass. Real Express/SQLite/filesystem operations, source signatures, auth/tenant/role denials, immutable approvals and assignment snapshots, logout, actual Sharp decoding and FFmpeg extraction, job recovery and error handling.
+- `npm test`: eighteen test groups pass. Real Express/SQLite/filesystem operations, source signatures, auth/tenant/role denials, immutable approvals and assignment snapshots, logout, actual Sharp decoding and FFmpeg extraction, job recovery and error handling.
 - `npm run build`: TypeScript checking and production Vite build pass.
 - `npm run test:e2e`: Chromium journey passes registration, workspace onboarding, journal persistence after reload, private text upload, draft/review/approval, Markdown download, training assignment and self acknowledgement, second empty workspace, mobile overflow/navigation checks.
 - `npm audit`: zero vulnerabilities after updating Sharp to 0.35.5.
@@ -46,3 +46,7 @@ Design artifacts are under C:/Users/jayny/.gstack/projects/jaynyasg-Zapp/designs
 ## Learner progress refinement
 
 Verified ordinary member progress persists across logout and a new session, stays independent of another learner, and records stable completion timestamps. The studio reopens the most recently saved lesson and displays saving feedback, percentage and a dated completion confirmation. Browser coverage includes partial-progress reload, completion reload, and failed-save rollback with an explicit error.
+
+## Collection separation and botanical design
+
+Backend regression covers independent collection records, chronological measurements, workspace image ownership, referenced-image deletion protection, manual issue status and stale/unauthorized edits. Browser verification creates a profile, attaches dated images, compares photos, saves measurements, resolves an issue, reloads the timeline, checks mobile overflow, and verifies previous lesson completion remains unchanged. Screenshots use synthetic camera frames, not actual plant diagnoses. Forest palette and Lucide Cannabis branding are visual refinements. Growth forecasts and cultivation triage/coaching are not implemented.

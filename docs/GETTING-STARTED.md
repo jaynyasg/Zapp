@@ -16,3 +16,5 @@ Source documents can be PDF, TXT or Markdown. Export Office files and scanner ca
 No email account recovery is implemented. Keep your password securely. Hosting and email delivery are not provisioned by running the local app.
 
 Open **Learning studio** to publish the generated lesson after its procedure is approved. Select a lesson and check off steps; progress persists across sessions. **Capture & practice** enables browser cameras and sampled visual guidance. **AI assistant** supports typed questions, optional dictation, and read-aloud replies. See [Learning and AI](LEARNING-AND-AI.md) for detailed limits and setup. Mobile camera access requires HTTPS; localhost on your desktop is not a phone-accessible deployment.
+
+For everyday photo records, choose **My collection**, create a plant/seed/material profile, and use **Save observation**. Measurement fields are optional and user-defined. Use the issue record type to track a concern and record a manual review. This area is independent of lesson progress; it stores observations without automatic AI analysis.

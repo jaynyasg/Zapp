@@ -1,0 +1,359 @@
+.nav-section {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  margin: 22px 12px 10px;
+}
+.nav-section:first-child {
+  margin-top: 0;
+}
+.collection-page {
+  padding: 32px 0 50px;
+}
+.collection-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 32px;
+}
+.collection-header h1 {
+  font-size: 40px;
+  letter-spacing: -1px;
+  margin-bottom: 14px;
+}
+.collection-header p {
+  color: var(--muted);
+  max-width: 570px;
+  margin-bottom: 0;
+}
+.collection-header > .primary {
+  flex-shrink: 0;
+}
+.collection-layout {
+  display: grid;
+  grid-template-columns: 265px minmax(0, 1fr);
+  gap: 30px;
+  align-items: start;
+}
+.collection-index {
+  border-top: 1px solid var(--line);
+}
+.collection-index h2 {
+  font-size: 20px;
+  margin: 22px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.collection-index h2 small {
+  font-family: "DM Sans", sans-serif;
+  color: var(--muted);
+}
+.collection-index > button {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  align-items: center;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  padding: 17px 10px;
+}
+.collection-index > button.selected {
+  background: #243c29;
+  border-radius: 6px;
+  color: var(--lime);
+}
+.collection-index > button > img {
+  width: 40px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.collection-index > button > svg:first-child {
+  width: 32px;
+  color: var(--lime);
+}
+.collection-index > button > span {
+  flex: 1;
+  min-width: 0;
+}
+.collection-index strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.collection-index small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+.collection-detail {
+  min-width: 0;
+}
+.specimen-header {
+  padding: 24px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.specimen-header h2 {
+  font-size: 34px;
+  margin: 14px 0;
+  overflow-wrap: anywhere;
+}
+.specimen-kind {
+  color: var(--lime);
+  font-size: 11px;
+  text-transform: capitalize;
+}
+.specimen-header > p {
+  color: var(--muted);
+}
+.record-totals {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 24px;
+}
+.record-totals strong {
+  font-family: var(--display);
+  font-size: 23px;
+  color: var(--ink);
+  margin-right: 5px;
+}
+.photo-comparison,
+.measurement-history,
+.observation-form,
+.observation-timeline {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--line);
+}
+.photo-comparison > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.photo-comparison figure {
+  margin: 0;
+  min-width: 0;
+}
+.photo-comparison img {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+  background: #0a110c;
+  border-radius: 8px;
+}
+.photo-comparison select {
+  width: 100%;
+  min-width: 0;
+}
+.photo-comparison figcaption {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.collection-section-title {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.collection-section-title h3 {
+  margin-bottom: 8px;
+}
+.collection-section-title span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.measurement-history svg {
+  display: block;
+  width: 100%;
+  max-height: 230px;
+  margin-top: 15px;
+}
+.measurement-history p {
+  font-size: 12px;
+}
+.measurement-history details {
+  font-size: 12px;
+}
+.measurement-history summary {
+  cursor: pointer;
+  padding: 8px 0;
+}
+.measurement-history table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.measurement-history td,
+.measurement-history th {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.observation-form > p {
+  font-size: 12px;
+  color: var(--muted);
+}
+.observation-form small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.form-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+}
+.form-pair input {
+  width: 100%;
+  min-width: 0;
+}
+.form-pair input[type="file"] {
+  padding: 10px;
+  font-size: 11px;
+}
+.observation-form textarea,
+.observation-form input,
+.observation-form select {
+  width: 100%;
+}
+.observation-timeline article {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+.observation-timeline article:last-child {
+  border-bottom: 0;
+}
+.observation-timeline article > header {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.observation-timeline article > small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin: 10px 0;
+}
+.record-status {
+  padding: 5px 8px;
+  background: #213629;
+  border-radius: 4px;
+}
+.record-status.open {
+  color: #f6c878;
+  background: #3b3020;
+}
+.record-status.resolved {
+  color: var(--lime);
+  background: #243722;
+}
+.record-measurement {
+  font-size: 12px;
+  color: var(--muted);
+}
+.record-measurement strong {
+  color: var(--ink);
+}
+.observation-photo {
+  max-width: 100%;
+  width: auto;
+  max-height: 280px;
+  object-fit: contain;
+  border-radius: 7px;
+}
+.observation-timeline form {
+  margin-top: 20px;
+}
+.observation-timeline form input {
+  width: 100%;
+}
+@media (max-width: 1100px) {
+  .collection-header {
+    align-items: start;
+    flex-direction: column;
+  }
+  .collection-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .collection-index > button {
+    padding: 12px;
+  }
+  .collection-index {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-top: 0;
+  }
+  .collection-index h2 {
+    width: 100%;
+    margin: 0;
+  }
+  .collection-index > button {
+    width: calc(50% - 5px);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+}
+@media (max-width: 600px) {
+  .collection-header h1 {
+    font-size: 34px;
+  }
+  .collection-header p {
+    font-size: 13px;
+  }
+  .collection-index > button {
+    width: 100%;
+  }
+  .form-pair {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .photo-comparison > div {
+    gap: 10px;
+  }
+  .photo-comparison img {
+    height: 165px;
+  }
+  .photo-comparison label {
+    font-size: 10px;
+  }
+  .photo-comparison select {
+    font-size: 10px;
+    padding: 8px;
+  }
+  .record-totals {
+    gap: 15px;
+    font-size: 10px;
+  }
+  .specimen-header h2 {
+    font-size: 30px;
+  }
+}
+
+.collection-page fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+dialog fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}

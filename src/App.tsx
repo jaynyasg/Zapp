@@ -3,6 +3,7 @@ import {
   useEffect,
   useCallback,
   useRef,
+  Fragment,
   type FormEvent,
 } from "react";
 import {
@@ -50,16 +51,18 @@ import {
 } from "./types";
 import { Brand, Badge, Empty, Modal, SectionHeading, Botanical } from "./ui";
 import { Assistant, Briefing, Capture, Lessons } from "./Learning";
+import { Collection } from "./Collection";
 
 const navigation = [
   ["overview", "Overview", LayoutGrid],
+  ["collection", "My collection", Leaf],
+  ["assistant", "AI assistant", MessageSquare],
+  ["journal", "Journal", NotebookPen],
   ["lessons", "Learning studio", GraduationCap],
   ["capture", "Capture & practice", Camera],
-  ["assistant", "AI assistant", MessageSquare],
-  ["media", "Media library", Images],
   ["procedures", "Procedures", BookOpen],
-  ["journal", "Journal", NotebookPen],
   ["team", "Team & training", Users],
+  ["media", "Media library", Images],
   ["activity", "Activity", Activity],
 ] as const;
 type Page = (typeof navigation)[number][0] | "settings";
@@ -378,18 +381,29 @@ export default function App() {
         </button>
         <nav aria-label="Main navigation">
           {navigation.map(([id, label, Icon]) => (
-            <button
-              key={id}
-              className={page === id ? "active" : ""}
-              onClick={() => go(id)}
-              aria-current={page === id ? "page" : undefined}
-            >
-              <Icon size={19} />
-              <span>{label}</span>
-              {id === "procedures" && reviewing.length > 0 && (
-                <b>{reviewing.length}</b>
+            <Fragment key={id}>
+              {["overview", "lessons", "media"].includes(id) && (
+                <span className="nav-section">
+                  {id === "overview"
+                    ? "Everyday records"
+                    : id === "lessons"
+                      ? "Lessons & practice"
+                      : "Workspace library"}
+                </span>
               )}
-            </button>
+              <button
+                key={id}
+                className={page === id ? "active" : ""}
+                onClick={() => go(id)}
+                aria-current={page === id ? "page" : undefined}
+              >
+                <Icon size={19} />
+                <span>{label}</span>
+                {id === "procedures" && reviewing.length > 0 && (
+                  <b>{reviewing.length}</b>
+                )}
+              </button>
+            </Fragment>
           ))}
         </nav>
         <div className="sidebar-bottom">
@@ -478,6 +492,18 @@ export default function App() {
             </div>
           ) : (
             <>
+              {page === "collection" && (
+                <Collection
+                  key={wid}
+                  root={root}
+                  media={data.media}
+                  userId={user.id}
+                  canReview={canEdit}
+                  onUploaded={() =>
+                    void reload().catch((e) => setError(e.message))
+                  }
+                />
+              )}
               {page === "lessons" && (
                 <Lessons
                   key={wid}
@@ -521,7 +547,7 @@ export default function App() {
                       <p>
                         Capture what happens. Teach what matters.
                         <br />
-                        Your sources, lessons, and team — connected.
+                        Your collection, lessons, and team — connected.
                       </p>
                       <button
                         className="primary"
@@ -542,7 +568,7 @@ export default function App() {
                       </span>
                       <button
                         className="engine-card source"
-                        onClick={() => go("capture")}
+                        onClick={() => go("collection")}
                       >
                         <Camera size={25} />
                         <small>01 / OBSERVE</small>

@@ -1,18 +1,18 @@
 ---
 # gstack: design-md-format=spec
 name: MasterGrow â€” Midnight Fieldwork
-description: A dark fieldwork console with technical typography and a tactile knowledge workflow.
+description: A dark botanical fieldwork console with cannabis-leaf identity, forest surfaces and technical typography.
 colors:
-  primary: "#d4f675"
+  primary: "#bddf88"
   on-primary: "#172014"
-  canvas: "#0d1115"
-  surface: "#171d22"
-  surface-raised: "#202b31"
-  text: "#edf0f2"
-  text-muted: "#a2aeb6"
-  border: "#323c44"
-  accent: "#d4f675"
-  success: "#d4f675"
+  canvas: "#0d1510"
+  surface: "#17241c"
+  surface-raised: "#22372a"
+  text: "#edf2e9"
+  text-muted: "#a6b6a9"
+  border: "#354b3b"
+  accent: "#bddf88"
+  success: "#bddf88"
   warning: "#f6c878"
   error: "#ffc1b0"
 typography:
@@ -50,7 +50,7 @@ components:
     textColor: "{colors.on-primary}"
     rounded: "{rounded.md}"
   button-primary-hover:
-    backgroundColor: "#e2ff9a"
+    backgroundColor: "#d3edab"
   input:
     borderColor: "{colors.border}"
     rounded: "{rounded.md}"
@@ -88,3 +88,11 @@ Short hover transitions; no continuous decorative motion. Honor reduced motion. 
 ## Design consultation record
 
 The gstack design and browse binaries and Aside browser were unavailable. Used the skill's HTML-preview fallback with local Playwright inspection. No competitor screenshots or independent outside-voice review are claimed. Font verification used the official Google Fonts page. A self-contained specimen with dark/light comparison and product mockups is saved under `C:/Users/jayny/.gstack/projects/jaynyasg-Zapp/designs/midnight-fieldwork/preview.html`. Product screenshots are in docs/screenshots.
+
+## Canopy refinement — 2026-11-16
+
+The user likes the existing design and requested a stronger cannabis identity. Retain the typography, composition and responsive layout. Derive dark surfaces from forest greens, soften the primary accent, and use the bundled Lucide Cannabis icon as the brand mark. This is a visual identity change, not an expansion into automated cultivation coaching.
+
+Navigation separates Everyday records, Lessons & practice, and Workspace library. My collection owns dated photos, user-entered measurements and issue logs. Learning studio owns lesson completion. Collection photos are stored without AI analysis and do not produce lessons automatically.
+
+The design consultation used the user's standing recommended-default authorization: update the existing specification, retain verified local Chakra Petch/DM Sans files and licenses, skip outside voices, and use an HTML specimen because gstack design/browser binaries and Aside were unavailable. No competitor visual research is claimed. Preview: C:/Users/jayny/.gstack/projects/jaynyasg-Zapp/designs/canopy-fieldwork/preview.html. Token source is the implemented CSS and that preview; gstack format validation passed with a Windows-compatible empty Bun config.

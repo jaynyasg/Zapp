@@ -46,3 +46,7 @@ One server process, local SQLite and private filesystem storage. Do not run mult
 `server/ai.js` chooses the configured provider and requests structured results. `server/learning.js` implements lessons, private progress and conversations, briefings and ephemeral image observations. `src/Learning.tsx` manages those screens plus browser camera/speech lifecycles; `src/learning.css` adds their dark design components.
 
 Analysis creates a procedure and lesson draft atomically. Publishing copies the approved procedure into the lesson. Progress and conversations are filtered by the authenticated user. Chat context is bounded and uses approved procedure excerpts; records cannot be changed by model output. Live frames are validated with Sharp and are not stored. Reminders are deterministic, derived from workspace records.
+
+## Collection records
+
+`server/collection.js` stores specimen profiles and observation/issue records in the existing workspace-scoped repository. `src/Collection.tsx` renders the list, observation form, measured history and photo comparison. These records have no lesson/procedure relationship and no provider calls. Images reuse private media storage and authenticated file access; references are checked within the workspace and protected from deletion.

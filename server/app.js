@@ -15,6 +15,7 @@ import { resolve, join } from "node:path";
 import { openDatabase, repository, id, now } from "./db.js";
 import { providerConfig } from "./ai.js";
 import { installLearning } from "./learning.js";
+import { installCollection } from "./collection.js";
 
 const scrypt = promisify(scryptCallback);
 const hash = (v) => createHash("sha256").update(v).digest("hex");
@@ -617,10 +618,13 @@ export function createApp({
     const m = get(req, "media");
     if (["queued", "processing"].includes(m.status))
       throw error(409, "Wait for processing to finish before deleting.");
-    if (repo.list(req.wid, "procedure").some((p) => p.sourceId === m.id))
+    if (
+      repo.list(req.wid, "procedure").some((p) => p.sourceId === m.id) ||
+      repo.list(req.wid, "observation").some((o) => o.mediaId === m.id)
+    )
       throw error(
         409,
-        "This file is evidence for a procedure and must be retained.",
+        "This file is evidence for a procedure or collection record and must be retained.",
       );
     repo.transaction(() => {
       db.prepare("DELETE FROM records WHERE id=?").run(m.id);
@@ -629,6 +633,7 @@ export function createApp({
     await unlink(join(dataDir, "uploads", m.storedName)).catch(() => {});
     res.json({ ok: true });
   });
+  installCollection({ app, repo, base, get, save, parse, error });
   installLearning({
     app,
     repo,

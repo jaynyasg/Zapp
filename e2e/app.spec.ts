@@ -150,6 +150,85 @@ test("new account can preserve notes, upload evidence and approve a procedure", 
     path: "docs/screenshots/capture-desktop.png",
     fullPage: true,
   });
+  await page
+    .getByRole("button", { name: "My collection", exact: true })
+    .click();
+  expect(
+    await page.evaluate(() =>
+      (window as unknown as { testStream: MediaStream }).testStream
+        .getTracks()
+        .every((t) => t.readyState === "ended"),
+    ),
+  ).toBeTruthy();
+  await page
+    .getByRole("button", { name: "Add to collection", exact: true })
+    .click();
+  await page.getByLabel("Record name", { exact: true }).fill("Plant A");
+  await page
+    .getByLabel("Measurement label", { exact: true })
+    .fill("Recorded dimension");
+  await page.getByLabel("Unit", { exact: true }).fill("cm");
+  await page
+    .getByRole("button", { name: "Create record", exact: true })
+    .click();
+  await page.getByLabel("Observed at").fill("2026-01-02T12:00");
+  await page.getByLabel("Observation notes").fill("Initial photo record.");
+  await page.getByLabel("Recorded dimension (cm)").fill("10");
+  await page
+    .getByLabel("Or attach an existing image")
+    .selectOption({ label: "Camera evidence" });
+  await page
+    .getByRole("button", { name: "Save observation", exact: true })
+    .click();
+  await expect(
+    page.getByText("Initial photo record.", { exact: true }),
+  ).toBeVisible();
+  await page.getByLabel("Observed at").fill("2026-01-03T12:00");
+  await page
+    .getByRole("combobox", { name: "Record type", exact: true })
+    .selectOption("issue");
+  await page.getByLabel("Observation notes").fill("A visible mark to review.");
+  await page.getByLabel("Recorded dimension (cm)").fill("12");
+  await page
+    .getByLabel("Or attach an existing image")
+    .selectOption({ label: "Camera evidence" });
+  await page
+    .getByRole("button", { name: "Save observation", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Compare your photos" }),
+  ).toBeVisible();
+  await page
+    .getByLabel("Review note", { exact: true })
+    .fill("Recorded my review.");
+  await page
+    .getByRole("button", { name: "Mark issue resolved", exact: true })
+    .click();
+  await expect(page.getByText("Resolved issue", { exact: true })).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByText("2 recorded measurements · cm", { exact: true }),
+  ).toBeVisible();
+  await page.screenshot({
+    path: "docs/screenshots/collection-desktop.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBeTruthy();
+  await page.screenshot({
+    path: "docs/screenshots/collection-mobile.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page
+    .getByRole("button", { name: "Learning studio", exact: true })
+    .click();
+  await expect(page.getByText("Completed", { exact: true })).toBeVisible();
   let releaseHistory!: () => void;
   const historyGate = new Promise<void>((resolve) => {
     releaseHistory = resolve;
@@ -163,13 +242,6 @@ test("new account can preserve notes, upload evidence and approve a procedure", 
   await expect(page.getByLabel("Message your assistant")).toBeDisabled();
   releaseHistory();
   await expect(page.getByLabel("Message your assistant")).toBeEnabled();
-  expect(
-    await page.evaluate(() =>
-      (window as unknown as { testStream: MediaStream }).testStream
-        .getTracks()
-        .every((t) => t.readyState === "ended"),
-    ),
-  ).toBeTruthy();
   await page.getByLabel("Message your assistant").fill("What should I review?");
   await expect(
     page.getByRole("button", { name: "Send", exact: true }),

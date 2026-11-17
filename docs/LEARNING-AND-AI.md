@@ -44,3 +44,11 @@ No OpenAI key was configured during implementation. The earlier live Anthropic c
 - src/Learning.tsx: lesson player, assistant voice controls, camera lifecycle and sampled guidance.
 - Replace browser dictation with a server-issued ephemeral realtime session for continuous voice, with separate usage controls and explicit consent.
 - Add a reviewed question/answer schema and competency evaluations before implementing scored assessments.
+
+## Collection records are separate from lessons
+
+Open **My collection** under Everyday records to create a plant, seed-lot or material profile. Optionally define one measurement label and unit per profile. Add dated notes, take/upload a photo, or attach an existing workspace image. New collection uploads always use store-only mode. They do not create lesson drafts or affect learner completion.
+
+The collection provides an observation timeline, side-by-side photo selection, a chart/table of manually recorded measurements, latest value and recorded change, and open/resolved issue records with review notes. It does not infer measurements from photographs, predict expected growth, diagnose conditions, or prescribe cultivation actions. Issue resolution is the user's recorded decision, not an AI assessment.
+
+Records are shared with members of the selected workspace. Any member can add profiles and observations. Only an issue's author or a reviewer/owner can change its status; stale edits are rejected. Linked photo evidence cannot be deleted while referenced. Native camera capture uses the phone file picker; camera choices vary by browser. Crop/scale calibration, target trajectories and realtime plant triage are not implemented.

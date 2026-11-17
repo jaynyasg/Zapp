@@ -57,3 +57,17 @@ All paths below share the workspace prefix and membership checks above.
 Observation response: allowed, reply, observations[], uncertainties[], checkedAt. Frames are not persisted. Chat and observations share 25 requests per five minutes per user and one concurrent request. Provider setup/funding failures return 503 with sanitized text. PDF originals download as attachments. Analysis produces media.lessonId alongside media.procedureId.
 
 Lesson progress responses include completed step indices, updatedAt (last save) and completedAt (null until all steps are checked). Repeated completion preserves the completion date; unchecking a step clears completion. Progress remains scoped to the authenticated user.
+
+## Collection records
+
+All routes use `/api/workspaces/:wid` and the existing membership guard.
+
+| Method | Suffix | Contract |
+| --- | --- | --- |
+| GET | /specimens | Profiles with entryCount, openIssues and newest photo coverId |
+| POST | /specimens | name, kind=plant/seed/material, notes; optional measurementLabel and unit must be supplied together |
+| GET | /specimens/:id | Profile and chronologically ordered observations |
+| POST | /specimens/:id/observations | observedAt ISO datetime, notes, kind=observation/issue, optional same-workspace image mediaId and numeric measurement |
+| PATCH | /observations/:id | status=open/resolved, version, resolutionNote; author or reviewer/owner only |
+
+Observation times are normalized to UTC; dates more than five minutes in the future are rejected. Measurement values require a configured profile label/unit. Observations do not invoke a model or modify lessons. Issue status changes preserve notes, record a resolution timestamp, increment the version and append an audit event. Media referenced by an observation cannot be deleted.
