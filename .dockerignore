@@ -1,0 +1,11 @@
+node_modules
+dist
+data
+.env
+.env.*
+.git
+.gstack
+.superpowers
+test-results
+playwright-report
+docs/screenshots

@@ -1,0 +1,69 @@
+{
+  "project_type": "saas",
+  "method": "sequential source and command verification",
+  "canonical_queue": [
+    {
+      "path": "README.md",
+      "status": "verified",
+      "mode": "create"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "status": "verified",
+      "mode": "create"
+    },
+    {
+      "path": "docs/CONFIGURATION.md",
+      "status": "verified",
+      "mode": "create"
+    },
+    {
+      "path": "docs/GETTING-STARTED.md",
+      "status": "verified",
+      "mode": "create"
+    },
+    {
+      "path": "docs/DEVELOPMENT.md",
+      "status": "verified",
+      "mode": "create"
+    },
+    {
+      "path": "docs/TESTING.md",
+      "status": "verified",
+      "mode": "create"
+    },
+    {
+      "path": "docs/API.md",
+      "status": "verified",
+      "mode": "create"
+    },
+    {
+      "path": "docs/DEPLOYMENT.md",
+      "status": "verified",
+      "mode": "create"
+    }
+  ],
+  "review_queue": [
+    {
+      "path": "docs/designs/mastergrow.md",
+      "status": "verified",
+      "notes": "Design intentions checked against implemented scope and documented limits"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-16-mastergrow.md",
+      "status": "verified",
+      "notes": "Design intentions checked against implemented scope and documented limits"
+    },
+    {
+      "path": "DESIGN.md",
+      "status": "verified",
+      "notes": "Design intentions checked against implemented scope and documented limits"
+    }
+  ],
+  "gap_queue": [],
+  "external_limits": [
+    "Anthropic credit balance insufficient",
+    "Docker daemon unavailable",
+    "Hosted CI not run"
+  ]
+}
