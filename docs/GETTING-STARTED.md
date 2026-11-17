@@ -18,3 +18,16 @@ No email account recovery is implemented. Keep your password securely. Hosting a
 Open **Learning studio** to publish the generated lesson after its procedure is approved. Select a lesson and check off steps; progress persists across sessions. **Capture & practice** enables browser cameras and sampled visual guidance. **AI assistant** supports typed questions, optional dictation, and read-aloud replies. See [Learning and AI](LEARNING-AND-AI.md) for detailed limits and setup. Mobile camera access requires HTTPS; localhost on your desktop is not a phone-accessible deployment.
 
 For everyday photo records, choose **My collection**, create a plant/seed/material profile, and use **Save observation**. Measurement fields are optional and user-defined. Use the issue record type to track a concern and record a manual review. This area is independent of lesson progress; it stores observations without automatic AI analysis.
+
+## Manage your collection
+
+The same **My collection** page has four sections:
+
+1. **Records** keeps your existing profiles, photos, observations and measurements.
+2. **Areas** creates a named grid (up to 12 × 12). Choose a plant or seed record, then tap an empty cell to place or move it. Tap an occupied cell to select its record and open its history. **Remove from layout** removes the placement without deleting the profile. Grid cells describe positions, not measured dimensions.
+3. **Tasks** schedules your own reminder for a record, an area or the entire collection. Complete, cancel, edit or snooze a task by one hour; reopen it when needed. Deadlines display in your device's local time zone. Completion is shared within the workspace and is separate from private lesson progress.
+4. **Materials** tracks stock and optionally links an existing material profile. Set a unit, current quantity, restock threshold and target. **Adjust stock** records a positive addition or negative usage with a note. The restock list suggests the difference between your target and current stock when the threshold is reached. Stock history records who made each adjustment.
+
+Use **Enable notifications** in Tasks for supported browsers. Keep the app open for its alerts. For reminders outside the app, choose **Calendar alarm** on a pending task and import the downloaded `.ics` file into your calendar. Calendar copies are independent: re-import after edits and update or remove the calendar event after completion/cancellation. Calendar notification delivery depends on the calendar app's settings.
+
+If a shared record changes while you are editing, the server rejects the stale save. Close and reopen the editor to load the latest record before trying again.

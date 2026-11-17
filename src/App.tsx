@@ -52,6 +52,7 @@ import {
 import { Brand, Badge, Empty, Modal, SectionHeading, Botanical } from "./ui";
 import { Assistant, Briefing, Capture, Lessons } from "./Learning";
 import { Collection } from "./Collection";
+import { CollectionReminders } from "./Garden";
 
 const navigation = [
   ["overview", "Overview", LayoutGrid],
@@ -492,6 +493,12 @@ export default function App() {
             </div>
           ) : (
             <>
+              <CollectionReminders
+                key={wid}
+                root={root}
+                userId={user.id}
+                onOpen={() => go("collection")}
+              />
               {page === "collection" && (
                 <Collection
                   key={wid}

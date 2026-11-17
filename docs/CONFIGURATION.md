@@ -2,6 +2,10 @@
 
 # Configuration
 
+## Collection reminders
+
+No new environment variables or AI credits are required for layouts, tasks or inventory. Enable browser notifications from **My collection → Tasks**. Permission and the preference apply to the current browser; the preference is scoped by account and workspace. Alerts refresh every 30 seconds while the app is open. Mobile notification support varies; use a downloaded calendar alarm where browser notifications are unavailable. There is no background push configuration in this release.
+
 Manually provisioned local accounts may use a username instead of an email. These accounts can sign in only through loopback connections, with a loopback HOST and NODE_ENV other than production. The same restriction applies to existing sessions. Public registration still requires an email and a password of at least 12 characters. Local accounts are stored only in the private database; no default credentials are shipped.
 
 The npm scripts load `.env` when it exists. Copy `.env.example`; never commit real keys.

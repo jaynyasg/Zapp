@@ -16,6 +16,7 @@ import { openDatabase, repository, id, now } from "./db.js";
 import { providerConfig } from "./ai.js";
 import { installLearning } from "./learning.js";
 import { installCollection } from "./collection.js";
+import { installGarden } from "./garden.js";
 
 const scrypt = promisify(scryptCallback);
 const hash = (v) => createHash("sha256").update(v).digest("hex");
@@ -634,6 +635,7 @@ export function createApp({
     res.json({ ok: true });
   });
   installCollection({ app, repo, base, get, save, parse, error });
+  installGarden({ app, repo, base, get, save, parse, error });
   installLearning({
     app,
     repo,

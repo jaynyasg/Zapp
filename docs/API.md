@@ -71,3 +71,22 @@ All routes use `/api/workspaces/:wid` and the existing membership guard.
 | PATCH | /observations/:id | status=open/resolved, version, resolutionNote; author or reviewer/owner only |
 
 Observation times are normalized to UTC; dates more than five minutes in the future are rejected. Measurement values require a configured profile label/unit. Observations do not invoke a model or modify lessons. Issue status changes preserve notes, record a resolution timestamp, increment the version and append an audit event. Media referenced by an observation cannot be deleted.
+
+## Collection management
+
+These routes also use `/api/workspaces/:wid`. All workspace members can manage layouts, tasks and stock; outsiders are rejected. Mutations append audit events.
+
+| Method | Suffix | Contract |
+| --- | --- | --- |
+| GET | /garden | areas, placements, tasks, supplies, adjustments, dueTasks, restock; due tasks are pending with deadline at/before now |
+| POST | /areas | name, rows/columns integers 1–12, optional notes; returns version 1 |
+| PATCH | /areas/:id | name, notes, version; updates details; dimensions stay fixed |
+| PUT | /specimens/:id/placement | areaId, zero-based row/column, version (0 initially); null areaId removes placement; plants/seeds only |
+| POST | /garden-tasks | title, ISO UTC dueAt; optional notes, same-workspace specimenId/areaId; pending initially |
+| PATCH | /garden-tasks/:id | version and optional title, notes, dueAt, specimenId, areaId, status=pending/completed/cancelled; omitted fields are preserved |
+| GET | /garden-tasks/:id/calendar | Authenticated text/calendar attachment; pending tasks include a display alarm at the deadline |
+| POST | /supplies | name, unit, quantity, reorderAt, targetQuantity; optional notes and material specimenId |
+| PATCH | /supplies/:id | name, unit, reorderAt, targetQuantity, version; optional notes/material specimenId; original unit must be kept |
+| POST | /supplies/:id/adjustments | version, nonzero signed delta, required note; stock remains within 0–1 billion; returns updated supply |
+
+Current versions are required for updates (409 on stale writes). A plant or seed has at most one active placement; occupied destinations return 409, invalid cells or foreign links return 400. A material profile may link to one inventory record. All stock quantities and targets are bounded to 0–1 billion; targets must be at least the threshold. Adjustment results and suggested quantities are rounded to six decimals. Stock adjustments store delta, resulting quantity, note and actor name, with a separate audit event attributed to the user ID. Restock entries include `suggestedQuantity = targetQuantity - quantity` whenever quantity is at or below the threshold.

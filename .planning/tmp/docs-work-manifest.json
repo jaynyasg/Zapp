@@ -75,5 +75,39 @@
       "Physical camera/scanner/voice devices unverified",
       "Hosted deployment not performed"
     ]
+  },
+  "collection_management_release": {
+    "date": "2026-11-17",
+    "status": "verified",
+    "method": "Sequential GSD documentation update and source verification; installed legacy CLI has no docs-init workflow",
+    "files": [
+      "README.md",
+      "docs/ARCHITECTURE.md",
+      "docs/CONFIGURATION.md",
+      "docs/GETTING-STARTED.md",
+      "docs/DEVELOPMENT.md",
+      "docs/TESTING.md",
+      "docs/API.md",
+      "docs/DEPLOYMENT.md"
+    ],
+    "requirements": [
+      "COLLECTION-04",
+      "AREA-01",
+      "TASK-01",
+      "ALERT-01",
+      "STOCK-01",
+      "STOCK-02"
+    ],
+    "external_limits": [
+      "System notifications and calendar delivery require target-device validation",
+      "No background push or calendar synchronization",
+      "Live AI and hosting limits unchanged"
+    ],
+    "verification": {
+      "api_tests": 21,
+      "browser_journeys": 2,
+      "production_build": "pass",
+      "mobile_overflow": "pass"
+    }
   }
 }

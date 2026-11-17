@@ -7,6 +7,10 @@
 
 Later: email recovery/verification, native distribution, enterprise SSO, independent security assessment, scalable object storage and queue. Robotics and cultivation coaching are outside this build.
 
-## Learning framework release � implemented
+## Learning framework release — implemented
 
 Source-linked lessons, approved publication, private progress, PDF storage/AI input, camera capture, sampled guided-practice endpoint, proactive reminders, private text assistant, browser voice controls, OpenAI provider adapter and dark design. Verified with backend/provider fixtures and a synthetic-camera Chromium journey. Live AI funding, model-quality evaluation and physical-device validation are remaining external gates.
+
+## Integrated collection management — implemented
+
+Records, Areas, Tasks and Materials share My collection. Existing profiles link to layout positions, deadlines and inventory. Version checks protect collaborative updates; stock and placement changes preserve audit attribution. In-app alerts, opt-in browser notifications and calendar-alarm downloads are available. Background push and synchronized calendar integration remain future work.

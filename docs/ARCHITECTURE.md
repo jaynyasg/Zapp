@@ -2,6 +2,16 @@
 
 # Architecture
 
+## Integrated collection management
+
+`src/Collection.tsx` owns the Records / Areas / Tasks / Materials navigation. `src/Garden.tsx` implements area placement, task scheduling, inventory forms and the workspace-wide reminder banner; `src/garden.css` follows the existing forest design. The selected section is remembered per workspace in session storage. Layouts and tasks link to the existing collection profile IDs; they do not create a second plant catalog.
+
+`server/garden.js` installs membership-protected routes using the existing record repository. Area, placement, gardenTask, supply and stockAdjustment records live in SQLite. Layout occupancy checks and stock adjustments run under a single transaction, together with their audit event. Record versions reject stale updates. All workspace members can collaborate on these records; procedure approval permissions are unchanged. Stock unit changes are rejected to preserve the meaning of historical quantities.
+
+Tasks store UTC deadlines and pending/completed/cancelled status. The browser displays device-local time, polls every 30 seconds and immediately refreshes after local changes. Opt-in notifications use the browser Notification API, with per-user/per-workspace preference and bounded deduplication in local storage. There is no server scheduler or push service. Calendar exports use UTC VEVENTs, escaped/folded text, stable IDs and a display alarm on pending tasks. Imported copies do not sync automatically.
+
+Restock suggestions are deterministic: quantity at or below the user-entered threshold triggers an alert; the suggested addition is target minus current stock. No model or paid provider is involved in collection management. Task completion does not affect lesson completion.
+
 ## Components
 
 `src/App.tsx` implements authentication, workspace selection, navigation and record workflows. `src/ui.tsx` holds shared display components and native dialogs. `src/types.ts` defines client contracts and the fetch helper. `src/styles.css` includes responsive layouts and locally bundled fonts.

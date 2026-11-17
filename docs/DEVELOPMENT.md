@@ -28,3 +28,9 @@ Public rollout needs account recovery/email verification, deployment-specific HT
 ## Learning features
 
 Provider adapters live in server/ai.js; learning and assistant routes live in server/learning.js. Inject respond into createApp for deterministic AI route tests, or transport/env into structuredResponse to test provider contracts without network billing. Follow DESIGN.md and keep new styles in src/learning.css. Camera components must stop all tracks and ignore stale observations after unmount. Do not add default accounts or keys to seed scripts.
+
+## Collection management
+
+Keep the single profile catalog in `server/collection.js` and the integrated navigation in `src/Collection.tsx`. `server/garden.js` adds linked layout/task/material records; `src/Garden.tsx` renders them. Preserve workspace membership, version checks and atomic stock/placement mutations. Optional PATCH fields must not inject defaults that erase existing links. Test audit attribution with user IDs, not display names.
+
+Use `tests/garden.test.js` for API regression cases and `e2e/garden.spec.ts` for the integrated collection workflow. All quantities, thresholds and tasks are entered by users. No AI key is required, and collection operations must not change lesson progress or generate growth recommendations.

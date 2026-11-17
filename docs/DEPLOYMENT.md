@@ -34,3 +34,5 @@ GitHub Actions in `.github/workflows/check.yml` runs tests, build, browser verif
 ## Mobile and provider readiness
 
 Publish behind HTTPS for mobile camera/microphone APIs. Test on the intended phones and USB cameras; browser speech recognition and scanner-export interfaces are device-dependent. Configure the chosen provider and billing before enabling paid analysis. Set usage budgets in the provider console. Sampled guidance and browser voice are framework integrations, not validated continuous realtime monitoring.
+
+Collection reminders have no server scheduler or background push subscription. Browser alerts require the app to remain open and may be delayed by suspended tabs/devices. Calendar downloads provide an independent reminder option; they do not synchronize later task edits. Real-device notification and calendar delivery require validation on the intended platforms. Layout, task and inventory records are included in normal database backups.

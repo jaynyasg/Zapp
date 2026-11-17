@@ -4,6 +4,7 @@ import App from "./App";
 import "./styles.css";
 import "./learning.css";
 import "./collection.css";
+import "./garden.css";
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />

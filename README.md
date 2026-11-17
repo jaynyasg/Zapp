@@ -32,6 +32,7 @@ For development, run `npm run dev` and open http://127.0.0.1:5173. The Vite prox
 - Ask a private text assistant about reviewed workspace material, with optional browser dictation and spoken replies.
 - See proactive reminders based on pending training, reviews and source processing issues.
 - Keep plant, seed-lot and material records in My collection, with dated photos, manual measurements and issue logs separate from lessons.
+- Manage named area layouts, linked task reminders, materials inventory and target-based restock suggestions inside My collection.
 - Use the cannabis-inspired Midnight Fieldwork dark interface on desktop and mobile.
 
 ## Enable AI
@@ -53,6 +54,8 @@ npm audit
 ```
 
 Tests cover workspace access, auth, workflow permissions, approved snapshots, source validation, extraction, job recovery and a browser journey. Browser tests use a separate `data/e2e` database and save screenshots to `docs/screenshots`.
+
+Collection task alerts refresh every 30 seconds while the app is open. Optional browser notifications require permission and device support. Each pending task can download a calendar event with an alarm for importing into your calendar. There is no background push service; changed or cancelled tasks must also be updated in your calendar.
 
 ## Documentation
 

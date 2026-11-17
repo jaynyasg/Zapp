@@ -1,0 +1,300 @@
+.collection-sections {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 32px;
+}
+.collection-sections button {
+  padding: 14px 24px;
+  border-radius: 8px 8px 0 0;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+}
+.collection-sections button[aria-current] {
+  background: #22372a;
+  color: var(--lime);
+  border-bottom-color: var(--lime);
+}
+.collection-page [hidden] {
+  display: none !important;
+}
+.garden-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.garden-heading h2 {
+  font-size: 30px;
+  margin: 8px 0 12px;
+}
+.garden-heading h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+.garden-heading p {
+  max-width: 650px;
+  color: var(--muted);
+  margin: 0;
+}
+.garden-heading > .primary {
+  flex-shrink: 0;
+}
+.garden-area-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.garden-panel {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px;
+  min-width: 0;
+}
+.garden-panel hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 24px 0;
+}
+.area-map {
+  background:
+    radial-gradient(ellipse at 65% 15%, #253b2b, transparent 70%), var(--paper);
+}
+.area-grid-scroll {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  max-width: 100%;
+  padding-bottom: 8px;
+}
+.area-grid {
+  display: grid;
+  gap: 10px;
+}
+.area-grid button {
+  min-height: 115px;
+  min-width: 0;
+  border: 1px dashed #47634d;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--muted);
+  padding: 12px;
+  overflow-wrap: anywhere;
+}
+.area-grid button small {
+  align-self: flex-start;
+  font-variant-numeric: tabular-nums;
+  font-size: 10px;
+}
+.area-grid button.occupied {
+  background: #2b4430;
+  border: 1px solid #74915d;
+  color: #d5eac1;
+}
+.area-grid button:not(:disabled):hover {
+  border-color: var(--lime);
+  background: #304c35;
+}
+.area-grid button:disabled {
+  opacity: 0.6;
+}
+.garden-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr));
+  gap: 20px;
+}
+.garden-cards h3 {
+  font-size: 23px;
+  margin: 15px 0 10px;
+  overflow-wrap: anywhere;
+}
+.garden-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+.garden-actions button,
+.garden-actions a,
+.reminder-options > button {
+  border: 1px solid var(--line);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  text-decoration: none;
+  color: var(--text);
+}
+.garden-actions button:hover,
+.garden-actions a:hover {
+  border-color: var(--lime);
+}
+.task-state {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 4px 10px;
+  color: var(--lime);
+  font-size: 11px;
+}
+.task-state.due {
+  color: #f6c878;
+  border-color: #75603d;
+  background: #2b291c;
+}
+.task-card time {
+  color: var(--muted);
+  font-size: 12px;
+}
+.task-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.task-links > span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.reminder-options {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.reminder-options > svg {
+  flex-shrink: 0;
+  color: var(--lime);
+}
+.reminder-options p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 6px 0 0;
+  max-width: 700px;
+}
+.reminder-options > button {
+  flex-shrink: 0;
+}
+.task-filter {
+  max-width: 220px;
+  margin-bottom: 24px;
+}
+.restock-list {
+  margin-bottom: 24px;
+  background: #1e3023;
+}
+.restock-list > .garden-heading {
+  margin-bottom: 16px;
+}
+.restock-list > .garden-heading > span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.restock-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.restock-item > span {
+  color: #d1e4bd;
+  font-size: 13px;
+}
+.stock-count {
+  display: block;
+  font-size: 20px;
+  color: var(--lime);
+  font-family: "Chakra Petch", sans-serif;
+}
+.stock-entry {
+  border-top: 1px solid var(--line);
+  padding: 12px 0;
+  font-size: 12px;
+}
+.stock-entry p {
+  margin: 6px 0;
+}
+.stock-entry small {
+  color: var(--muted);
+}
+.supply-card summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 12px;
+}
+.collection-alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 13px 18px;
+  background: #263622;
+  border: 1px solid #49603b;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 12px;
+}
+.collection-alert > svg {
+  color: var(--lime);
+  flex-shrink: 0;
+}
+.collection-alert button {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--lime);
+}
+@media (max-width: 900px) {
+  .garden-area-layout {
+    grid-template-columns: 1fr;
+  }
+  .reminder-options {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 600px) {
+  .collection-sections {
+    gap: 0;
+  }
+  .collection-sections button {
+    flex: 1;
+    padding: 12px 7px;
+    font-size: 12px;
+  }
+  .garden-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .garden-heading h2 {
+    font-size: 27px;
+  }
+  .garden-panel {
+    padding: 18px;
+  }
+  .garden-cards {
+    grid-template-columns: 1fr;
+  }
+  .restock-item {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .area-grid {
+    gap: 6px;
+  }
+  .area-grid button {
+    min-height: 102px;
+    padding: 8px;
+    font-size: 12px;
+  }
+}

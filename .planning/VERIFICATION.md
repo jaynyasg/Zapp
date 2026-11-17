@@ -47,6 +47,16 @@ Design artifacts are under C:/Users/jayny/.gstack/projects/jaynyasg-Zapp/designs
 
 Verified ordinary member progress persists across logout and a new session, stays independent of another learner, and records stable completion timestamps. The studio reopens the most recently saved lesson and displays saving feedback, percentage and a dated completion confirmation. Browser coverage includes partial-progress reload, completion reload, and failed-save rollback with an explicit error.
 
+## Integrated collection management — 2026-11-17
+
+- New API tests first failed with missing route 404 responses. The browser journey first failed at the missing Areas navigation. Both passed after implementation.
+- Regression tests caught partial task updates clearing profile links/notes and audit events using display names instead of user IDs. Both were fixed and verified.
+- Layout bounds, occupancy, workspace access, stale versions, task completion and preserved links, calendar escaping/alarms, restock calculations, stock limits and audit attribution are covered by real API/SQLite tests.
+- `npm test`: 21 passed. `npm run build`: passed TypeScript and production build. `npm run test:e2e`: both Chromium journeys passed. `git diff --check`: passed. No dependencies were added.
+- Browser coverage includes saved placement and inventory reload, task completion, a downloaded calendar file, threshold restock suggestions and mobile overflow checks. Desktop and mobile area/material screenshots reviewed.
+- Browser/OS notifications and calendar delivery on physical devices remain unverified. No background push, live AI funding claim or new hosting deployment is included. Area layouts and task deadlines are user-defined; no cultivation guidance is generated.
+- GSD documentation was updated in the main thread against source and tests. The installed legacy gsd-tools CLI does not expose docs-init; the existing documentation manifest was maintained directly. No independent agent review is claimed.
+
 ## Collection separation and botanical design
 
 Backend regression covers independent collection records, chronological measurements, workspace image ownership, referenced-image deletion protection, manual issue status and stale/unauthorized edits. Browser verification creates a profile, attaches dated images, compares photos, saves measurements, resolves an issue, reloads the timeline, checks mobile overflow, and verifies previous lesson completion remains unchanged. Screenshots use synthetic camera frames, not actual plant diagnoses. Forest palette and Lucide Cannabis branding are visual refinements. Growth forecasts and cultivation triage/coaching are not implemented.
