@@ -115,6 +115,11 @@ test("worker creates source-linked draft and recovers interrupted jobs", async (
     const p = repo.list("w", "procedure")[0];
     assert.equal(p.sourceId, m.id);
     assert.equal(p.status, "draft");
+    const lesson = repo.list("w", "lesson")[0];
+    assert.equal(lesson.procedureId, p.id);
+    assert.equal(lesson.sourceId, m.id);
+    assert.equal(lesson.status, "draft");
+    assert.equal(repo.get("w", "media", m.id).lessonId, lesson.id);
     assert.equal(p.steps[0], "Record arrival time. [text]");
     const f = repo.put("w", "media", { ...m, id: undefined, status: "queued" });
     await processNext({

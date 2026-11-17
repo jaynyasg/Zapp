@@ -31,6 +31,9 @@ import {
   RefreshCw,
   Trash2,
   Leaf,
+  Camera,
+  GraduationCap,
+  MessageSquare,
 } from "lucide-react";
 import {
   api,
@@ -46,9 +49,13 @@ import {
   type Assignment,
 } from "./types";
 import { Brand, Badge, Empty, Modal, SectionHeading, Botanical } from "./ui";
+import { Assistant, Briefing, Capture, Lessons } from "./Learning";
 
 const navigation = [
   ["overview", "Overview", LayoutGrid],
+  ["lessons", "Learning studio", GraduationCap],
+  ["capture", "Capture & practice", Camera],
+  ["assistant", "AI assistant", MessageSquare],
   ["media", "Media library", Images],
   ["procedures", "Procedures", BookOpen],
   ["journal", "Journal", NotebookPen],
@@ -471,22 +478,50 @@ export default function App() {
             </div>
           ) : (
             <>
+              {page === "lessons" && (
+                <Lessons
+                  key={wid}
+                  root={root}
+                  procedures={data.procedures}
+                  canEdit={canEdit}
+                  onProcedures={() => go("procedures")}
+                />
+              )}
+              {page === "capture" && (
+                <Capture
+                  key={wid}
+                  root={root}
+                  procedures={data.procedures}
+                  config={config}
+                  onUploaded={() =>
+                    void reload().catch((e) => setError(e.message))
+                  }
+                />
+              )}
+              {page === "assistant" && (
+                <Assistant
+                  key={wid}
+                  root={root}
+                  config={config}
+                  navigate={(p) => go(p as Page)}
+                />
+              )}
               {page === "overview" && (
                 <>
                   <section className="hero">
                     <div>
                       <span className="eyebrow">
-                        YOUR KNOWLEDGE, TAKING ROOT
+                        THE WORKSPACE THAT LEARNS WITH YOU
                       </span>
                       <h1>
-                        Good things grow
+                        Real experience.
                         <br />
-                        from good records.
+                        Shared intelligence.
                       </h1>
                       <p>
-                        Your media, procedures, and people.
+                        Capture what happens. Teach what matters.
                         <br />
-                        One thoughtfully organized workspace.
+                        Your sources, lessons, and team — connected.
                       </p>
                       <button
                         className="primary"
@@ -496,8 +531,56 @@ export default function App() {
                         <ArrowUpRight size={17} />
                       </button>
                     </div>
-                    <Botanical />
+                    <div
+                      className="knowledge-engine"
+                      aria-label="Source to lesson to guided practice"
+                    >
+                      <div className="engine-orbit" />
+                      <div className="engine-orbit inner" />
+                      <span className="engine-coordinate">
+                        KNOWLEDGE ENGINE / 01
+                      </span>
+                      <button
+                        className="engine-card source"
+                        onClick={() => go("capture")}
+                      >
+                        <Camera size={25} />
+                        <small>01 / OBSERVE</small>
+                        <strong>Capture reality</strong>
+                        <span>Photo · Video · Document</span>
+                        <ArrowUpRight size={19} />
+                      </button>
+                      <button
+                        className="engine-card learning"
+                        onClick={() => go("lessons")}
+                      >
+                        <GraduationCap size={25} />
+                        <small>02 / UNDERSTAND</small>
+                        <strong>Make it teachable</strong>
+                        <span>Source-grounded lessons</span>
+                        <ArrowUpRight size={19} />
+                      </button>
+                      <button
+                        className="engine-card practice"
+                        onClick={() => go("assistant")}
+                      >
+                        <MessageSquare size={25} />
+                        <small>03 / PUT IT TO WORK</small>
+                        <strong>Learn in the moment</strong>
+                        <span>Context. Conversation. Progress.</span>
+                        <ArrowUpRight size={19} />
+                      </button>
+                      <span className="engine-foot">
+                        <span className="status-pip" /> BUILT AROUND YOUR
+                        KNOWLEDGE
+                      </span>
+                    </div>
                   </section>
+                  <Briefing
+                    key={wid}
+                    root={root}
+                    navigate={(p) => go(p as Page)}
+                  />
                   <div className="stats">
                     {[
                       [
@@ -886,7 +969,7 @@ export default function App() {
                       <dt>AI provider</dt>
                       <dd>
                         {config?.aiEnabled
-                          ? "Anthropic · API key configured"
+                          ? `${config.provider} · API key configured`
                           : "Not configured"}
                       </dd>
                       <dt>Media storage</dt>
@@ -898,8 +981,8 @@ export default function App() {
                         <strong>Source material → useful drafts</strong>
                         <p>
                           {config?.aiEnabled
-                            ? "AI processing is available for uploads you choose to analyze."
-                            : "Set ANTHROPIC_API_KEY in the server environment and restart to enable processing."}{" "}
+                            ? "An API key is configured. Successful analysis also requires provider credits and model access."
+                            : "Set OPENAI_API_KEY or ANTHROPIC_API_KEY in the server environment and restart to enable processing."}{" "}
                           Generated materials need a human review. Video
                           analysis samples visual frames; it does not listen to
                           audio.
@@ -1001,7 +1084,7 @@ export default function App() {
                   aria-label="Choose file"
                   name="file"
                   type="file"
-                  accept=".jpg,.jpeg,.png,.webp,.mp4,.webm,.txt,.md"
+                  accept=".jpg,.jpeg,.png,.webp,.mp4,.webm,.pdf,.txt,.md"
                   required
                 />
               </label>
@@ -1011,9 +1094,9 @@ export default function App() {
                 <span>
                   <strong>Turn this into a useful draft</strong>
                   <small>
-                    Send this content to Anthropic for a summary, evidenced
-                    checklist, and knowledge questions. Review before using.
-                    Video audio is not analyzed.
+                    Send this content to {config?.provider || "the AI provider"}{" "}
+                    for a lesson, summary, evidenced checklist, and knowledge
+                    questions. Review before using. Video audio is not analyzed.
                   </small>
                 </span>
               </label>
@@ -1688,10 +1771,10 @@ function Auth({ onAuth }: { onAuth: (u: User) => Promise<void> }) {
               />
             )}
             <Field
-              label="Email address"
+              label={register ? "Email address" : "Email or username"}
               name="email"
-              type="email"
-              autoComplete="email"
+              type={register ? "email" : "text"}
+              autoComplete={register ? "email" : "username"}
               required
             />
             <Field

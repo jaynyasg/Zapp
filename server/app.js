@@ -13,6 +13,8 @@ import { promisify } from "node:util";
 import { readFile, unlink } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { openDatabase, repository, id, now } from "./db.js";
+import { providerConfig } from "./ai.js";
+import { installLearning } from "./learning.js";
 
 const scrypt = promisify(scryptCallback);
 const hash = (v) => createHash("sha256").update(v).digest("hex");
@@ -34,7 +36,10 @@ const parse = (schema, body) => {
 
 export function createApp({
   dataDir = resolve("data"),
-  aiEnabled = Boolean(process.env.ANTHROPIC_API_KEY),
+  aiEnabled = providerConfig().aiEnabled,
+  respond,
+  allowLocalAccounts = process.env.NODE_ENV !== "production" &&
+    ["127.0.0.1", "localhost", "::1"].includes(process.env.HOST || "127.0.0.1"),
 } = {}) {
   const db = openDatabase(dataDir),
     repo = repository(db),
@@ -108,6 +113,12 @@ export function createApp({
     cookie(res, token);
   }
   const publicUser = (u) => ({ id: u.id, name: u.name, email: u.email });
+  const localAccountAllowed = (req, user) =>
+    user.email.includes("@") ||
+    (allowLocalAccounts &&
+      ["127.0.0.1", "::1", "::ffff:127.0.0.1"].includes(
+        req.socket.remoteAddress,
+      ));
   app.post("/api/auth/register", async (req, res) => {
     const b = parse(
       z.object({
@@ -142,7 +153,12 @@ export function createApp({
   app.post("/api/auth/login", async (req, res) => {
     const b = parse(
       z.object({
-        email: z.email().transform((v) => v.toLowerCase()),
+        email: z
+          .string()
+          .trim()
+          .min(1)
+          .max(254)
+          .transform((v) => v.toLowerCase()),
         password: z.string().min(1).max(128),
       }),
       req.body,
@@ -152,7 +168,11 @@ export function createApp({
       user?.password || `${"0".repeat(32)}:${"0".repeat(128)}`
     ).split(":");
     const actual = await scrypt(b.password, salt, 64);
-    if (!user || !timingSafeEqual(actual, Buffer.from(expected, "hex")))
+    if (
+      !user ||
+      !localAccountAllowed(req, user) ||
+      !timingSafeEqual(actual, Buffer.from(expected, "hex"))
+    )
       throw error(401, "Email or password is incorrect.");
     session(req, res, user);
     res.json(publicUser(user));
@@ -170,7 +190,8 @@ export function createApp({
           "SELECT u.* FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token=? AND s.expires>?",
         )
         .get(hash(token), Date.now());
-    if (!row) return next(error(401, "Please sign in to continue."));
+    if (!row || !localAccountAllowed(req, row))
+      return next(error(401, "Please sign in to continue."));
     req.user = publicUser(row);
     req.sessionHash = hash(token);
     next();
@@ -184,7 +205,7 @@ export function createApp({
   app.get("/api/config", (req, res) =>
     res.json({
       aiEnabled,
-      provider: "Anthropic",
+      provider: providerConfig().provider === "openai" ? "OpenAI" : "Anthropic",
       maxUploadMB: 100,
       videoAnalysis: "Visual frames only; audio is not transcribed.",
     }),
@@ -319,21 +340,19 @@ export function createApp({
   );
   app.post(`${base}/procedures`, (req, res) => {
     allow(req, ["owner", "reviewer"]);
-    res
-      .status(201)
-      .json(
-        save(
-          req,
-          "procedure",
-          {
-            ...parse(procedureSchema, req.body),
-            version: 1,
-            status: "draft",
-            author: req.user.name,
-          },
-          "procedure.created",
-        ),
-      );
+    res.status(201).json(
+      save(
+        req,
+        "procedure",
+        {
+          ...parse(procedureSchema, req.body),
+          version: 1,
+          status: "draft",
+          author: req.user.name,
+        },
+        "procedure.created",
+      ),
+    );
   });
   app.patch(`${base}/procedures/:rid`, (req, res) => {
     allow(req, ["owner", "reviewer"]);
@@ -449,22 +468,20 @@ export function createApp({
         409,
         "This member already has an open assignment for this procedure.",
       );
-    res
-      .status(201)
-      .json(
-        save(
-          req,
-          "assignment",
-          {
-            ...b,
-            snapshot: p,
-            title: p.title,
-            assignee: user.name,
-            completedAt: null,
-          },
-          "training.assigned",
-        ),
-      );
+    res.status(201).json(
+      save(
+        req,
+        "assignment",
+        {
+          ...b,
+          snapshot: p,
+          title: p.title,
+          assignee: user.name,
+          completedAt: null,
+        },
+        "training.assigned",
+      ),
+    );
   });
   app.post(`${base}/assignments/:rid/complete`, (req, res) => {
     const a = get(req, "assignment");
@@ -496,7 +513,7 @@ export function createApp({
     res.json(repo.list(req.wid, "media").map(({ storedName, ...m }) => m)),
   );
   app.post(`${base}/media`, upload.single("file"), async (req, res) => {
-    if (!req.file) throw error(400, "Choose a picture, video or text file.");
+    if (!req.file) throw error(400, "Choose a picture, video or document.");
     try {
       const b = parse(
         z.object({
@@ -507,6 +524,11 @@ export function createApp({
       );
       const bytes = await readFile(req.file.path);
       let mime = null;
+      if (bytes.toString("ascii", 0, 5) === "%PDF-") {
+        if (bytes.length > 10 * 1024 * 1024)
+          throw error(413, "PDF documents must be under 10 MB.");
+        mime = "application/pdf";
+      }
       if (
         bytes
           .subarray(0, 8)
@@ -532,7 +554,7 @@ export function createApp({
       if (!mime)
         throw error(
           415,
-          "Unsupported content. Use JPG, PNG, WebP, MP4, WebM, TXT or MD.",
+          "Unsupported content. Use JPG, PNG, WebP, MP4, WebM, PDF, TXT or MD.",
         );
       if (!bytes.length) throw error(400, "The file is empty.");
       const status =
@@ -568,7 +590,7 @@ export function createApp({
     res.set("Content-Type", m.mime);
     res.set(
       "Content-Disposition",
-      `${m.mime === "text/plain" ? "attachment" : "inline"}; filename="media.${m.mime.split("/")[1]}"`,
+      `${m.mime === "text/plain" || m.mime === "application/pdf" ? "attachment" : "inline"}; filename="media.${m.mime.split("/")[1]}"`,
     );
     res.sendFile(resolve(dataDir, "uploads", m.storedName));
   });
@@ -576,7 +598,7 @@ export function createApp({
     if (!aiEnabled)
       throw error(
         503,
-        "AI processing is not configured. Add ANTHROPIC_API_KEY on the server and restart.",
+        "AI processing is not configured. Add OPENAI_API_KEY or ANTHROPIC_API_KEY on the server and restart.",
       );
     const m = get(req, "media");
     if (["queued", "processing", "draft"].includes(m.status))
@@ -607,6 +629,19 @@ export function createApp({
     await unlink(join(dataDir, "uploads", m.storedName)).catch(() => {});
     res.json({ ok: true });
   });
+  installLearning({
+    app,
+    repo,
+    db,
+    base,
+    allow,
+    get,
+    save,
+    parse,
+    error,
+    aiEnabled,
+    respond,
+  });
   app.use("/api", (req, res) =>
     res.status(404).json({ error: "Endpoint not found." }),
   );
@@ -624,16 +659,14 @@ export function createApp({
           : err.status || 500;
     if (status >= 500 && status !== 503)
       console.error("Request failed:", err.name);
-    res
-      .status(status)
-      .json({
-        error:
-          status >= 500 && status !== 503
-            ? "Something went wrong. Please retry."
-            : err.code === "LIMIT_FILE_SIZE"
-              ? "File exceeds the 100 MB limit."
-              : err.message,
-      });
+    res.status(status).json({
+      error:
+        status >= 500 && status !== 503
+          ? "Something went wrong. Please retry."
+          : err.code === "LIMIT_FILE_SIZE"
+            ? "File exceeds the 100 MB limit."
+            : err.message,
+    });
   });
   return { app, db, repo };
 }

@@ -23,3 +23,7 @@ Playwright uses a production build, starts an isolated server on port 4173 and w
 The current Anthropic account rejected a live request for insufficient credit. Live draft quality and provider-specific successful response handling require a funded account and repeat smoke test. Never use confidential customer content as a test fixture without authorization.
 
 The Docker image and GitHub-hosted workflow are provided but were not executed in this session. No automated suite establishes regulatory compliance, completeness of sampled video interpretation or universal browser/device compatibility.
+
+## Learning release coverage
+
+Sixteen backend/provider test groups cover local username restrictions, lesson publication and progress, private conversations, assistant context, sanitized refusals, real JPEG observation validation, PDF signature checks, and both provider request formats. Successful external responses use fixtures; they do not establish live model quality. The browser journey additionally creates/completes a lesson, reloads progress, saves a synthetic camera frame, asserts camera tracks stop on navigation, checks disabled unfunded AI controls, and verifies the mobile assistant has no horizontal overflow. Browser camera input uses Chromium fake-device flags; no physical camera or microphone is accessed by tests. Both provider keys are cleared in the browser-test server.

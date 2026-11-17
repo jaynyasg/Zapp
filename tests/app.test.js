@@ -4,6 +4,7 @@ import request from "supertest";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { randomBytes, scryptSync } from "node:crypto";
 import { createApp } from "../server/app.js";
 
 const dir = mkdtempSync(join(tmpdir(), "mastergrow-test-"));
@@ -16,6 +17,48 @@ const owner = request.agent(app),
   member = request.agent(app),
   outsider = request.agent(app);
 let wid, pid, aid;
+test("local username accounts authenticate without weakening public registration", async () => {
+  const salt = randomBytes(16).toString("hex");
+  db.prepare("INSERT INTO users VALUES(?,?,?,?,?)").run(
+    "local-admin-test",
+    "Local admin",
+    "x",
+    `${salt}:${scryptSync("x", salt, 64).toString("hex")}`,
+    new Date().toISOString(),
+  );
+  const local = request.agent(app);
+  await local
+    .post("/api/auth/login")
+    .send({ email: "x", password: "wrong" })
+    .expect(401);
+  const result = await local
+    .post("/api/auth/login")
+    .send({ email: "x", password: "x" })
+    .expect(200);
+  assert.equal(result.body.id, "local-admin-test");
+  await local.get("/api/auth/me").expect(200);
+  await local
+    .post("/api/auth/register")
+    .send({ name: "Another", email: "another", password: "x" })
+    .expect(400);
+  const locked = createApp({
+    dataDir: dir,
+    aiEnabled: false,
+    allowLocalAccounts: false,
+  });
+  try {
+    await request(locked.app)
+      .post("/api/auth/login")
+      .send({ email: "x", password: "x" })
+      .expect(401);
+    await request(locked.app)
+      .get("/api/auth/me")
+      .set("Cookie", result.headers["set-cookie"])
+      .expect(401);
+  } finally {
+    locked.db.close();
+  }
+});
 test("accounts reject weak passwords and create private authenticated workspaces", async () => {
   await owner
     .post("/api/auth/register")

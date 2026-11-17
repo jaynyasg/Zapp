@@ -5,42 +5,42 @@
     {
       "path": "README.md",
       "status": "verified",
-      "mode": "create"
+      "mode": "update"
     },
     {
       "path": "docs/ARCHITECTURE.md",
       "status": "verified",
-      "mode": "create"
+      "mode": "update"
     },
     {
       "path": "docs/CONFIGURATION.md",
       "status": "verified",
-      "mode": "create"
+      "mode": "update"
     },
     {
       "path": "docs/GETTING-STARTED.md",
       "status": "verified",
-      "mode": "create"
+      "mode": "update"
     },
     {
       "path": "docs/DEVELOPMENT.md",
       "status": "verified",
-      "mode": "create"
+      "mode": "update"
     },
     {
       "path": "docs/TESTING.md",
       "status": "verified",
-      "mode": "create"
+      "mode": "update"
     },
     {
       "path": "docs/API.md",
       "status": "verified",
-      "mode": "create"
+      "mode": "update"
     },
     {
       "path": "docs/DEPLOYMENT.md",
       "status": "verified",
-      "mode": "create"
+      "mode": "update"
     }
   ],
   "review_queue": [
@@ -65,5 +65,15 @@
     "Anthropic credit balance insufficient",
     "Docker daemon unavailable",
     "Hosted CI not run"
-  ]
+  ],
+  "learning_release": {
+    "status": "verified",
+    "method": "sequential source, route-contract and test verification",
+    "supplement": "docs/LEARNING-AND-AI.md",
+    "limitations": [
+      "Live AI funding and quality unverified",
+      "Physical camera/scanner/voice devices unverified",
+      "Hosted deployment not performed"
+    ]
+  }
 }

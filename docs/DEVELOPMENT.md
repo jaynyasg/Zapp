@@ -24,3 +24,7 @@ Use explicit schema changes for future database migrations. The initial schema i
 ## Known release work
 
 Public rollout needs account recovery/email verification, deployment-specific HTTPS/proxy configuration, storage quotas, backup restoration checks, malware scanning policy and independent security review. The app has no billing, telemetry service, native app packaging or compliance certification.
+
+## Learning features
+
+Provider adapters live in server/ai.js; learning and assistant routes live in server/learning.js. Inject respond into createApp for deterministic AI route tests, or transport/env into structuredResponse to test provider contracts without network billing. Follow DESIGN.md and keep new styles in src/learning.css. Camera components must stop all tracks and ignore stale observations after unmount. Do not add default accounts or keys to seed scripts.

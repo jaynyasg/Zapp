@@ -2,7 +2,7 @@
 
 ## Observed evidence
 
-- `npm test`: eight test groups pass. Real Express/SQLite/filesystem operations, source signatures, auth/tenant/role denials, immutable approvals and assignment snapshots, logout, actual Sharp decoding and FFmpeg extraction, job recovery and error handling.
+- `npm test`: sixteen test groups pass. Real Express/SQLite/filesystem operations, source signatures, auth/tenant/role denials, immutable approvals and assignment snapshots, logout, actual Sharp decoding and FFmpeg extraction, job recovery and error handling.
 - `npm run build`: TypeScript checking and production Vite build pass.
 - `npm run test:e2e`: Chromium journey passes registration, workspace onboarding, journal persistence after reload, private text upload, draft/review/approval, Markdown download, training assignment and self acknowledgement, second empty workspace, mobile overflow/navigation checks.
 - `npm audit`: zero vulnerabilities after updating Sharp to 0.35.5.
@@ -29,3 +29,16 @@ GSD docs-init classified the project as a SaaS-shaped application with API, depl
 ## Remaining release limits
 
 Fund the provider account and verify output quality on non-sensitive general operations examples. Configure a hosting target and test the container/HTTPS/backup restore before public rollout. Email recovery/verification, storage quotas, malware scanning, advanced retention, SSO and native apps remain future work. Video audio is not analyzed; visual evidence is sampled. No claim of regulatory certification or complete cultivation instruction support.
+
+## Learning release verification
+
+- New backend tests first reproduced missing lesson/assistant routes and PDF upload rejection, then passed after implementation.
+- Provider contracts tested with injected transports for OpenAI structured Responses and Anthropic tool output, including incomplete/refused responses and sanitized credit errors.
+- Private chat histories isolated between two members of the same workspace. Assistant context includes approved procedure excerpts only (unapproved titles appear only in permitted review reminders).
+- JPEG observations are decoded, checked against an approved step, and not stored as media. Source uploads create draft lessons in the same transaction as procedures.
+- Browser regression caught delayed checkbox feedback and camera data-URL fetch blocked by CSP. Fixed optimistic progress with failure reload and direct JPEG byte conversion without weakening CSP.
+- Browser confirms synthetic camera tracks end after navigation. Delayed history loading disables chat input until ready. Mobile assistant has no horizontal overflow. Speech synthesis/recognition are browser integrations, not live-device verified.
+- The production dependency audit returned zero vulnerabilities. gstack HTML preview rendered with verified Chakra Petch font and no overflow at 390px; current dark screenshots reviewed.
+- Source and docs reviewed sequentially in main thread. The design consultation used user-authorized recommended defaults; no outside-voice review claimed.
+
+Design artifacts are under C:/Users/jayny/.gstack/projects/jaynyasg-Zapp/designs/midnight-fieldwork. Live generation and visual-guidance accuracy are not claimed: no OpenAI key configured; earlier Anthropic balance insufficient.

@@ -17,7 +17,9 @@ test("new account can preserve notes, upload evidence and approve a procedure", 
     .getByRole("button", { name: "Create workspace", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Good things grow from good records." }),
+    page.getByRole("heading", {
+      name: "Real experience. Shared intelligence.",
+    }),
   ).toBeVisible();
   await page.screenshot({
     path: "docs/screenshots/overview-desktop.png",
@@ -76,6 +78,94 @@ test("new account can preserve notes, upload evidence and approve a procedure", 
   await page.getByRole("link", { name: "Export Markdown" }).click();
   expect((await downloadPromise).suggestedFilename()).toBe("procedure.md");
   await page.getByRole("button", { name: "Close dialog" }).click();
+  await page
+    .getByRole("button", { name: "Learning studio", exact: true })
+    .click();
+  await page
+    .getByLabel("Approved source procedure")
+    .selectOption({ label: "Visitor welcome" });
+  await expect(
+    page.getByRole("heading", { name: "Visitor welcome" }).last(),
+  ).toBeVisible();
+  await page.getByRole("checkbox", { name: /STEP 01/ }).check();
+  await expect(page.getByText("1 of 2 reviewed")).toBeVisible();
+  await page.getByRole("checkbox", { name: /STEP 02/ }).check();
+  await expect(page.getByText("Completed", { exact: true })).toBeVisible();
+  await page.reload();
+  await expect(page.getByText("Completed", { exact: true })).toBeVisible();
+  await page.screenshot({
+    path: "docs/screenshots/lessons-desktop.png",
+    fullPage: true,
+  });
+  await page
+    .getByRole("button", { name: "Capture & practice", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Enable camera", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Stop camera", exact: true }),
+  ).toBeVisible();
+  await page.waitForFunction(() => {
+    const v = document.querySelector("video");
+    return !!v?.videoWidth;
+  });
+  await page.evaluate(() => {
+    (window as unknown as { testStream: MediaStream }).testStream =
+      document.querySelector("video")!.srcObject as MediaStream;
+  });
+  await page.getByLabel("Source title").fill("Camera evidence");
+  await page.getByRole("button", { name: "Save photo", exact: true }).click();
+  await expect(
+    page.getByText("Source saved to your private library."),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Start guidance", exact: true }),
+  ).toBeDisabled();
+  await page.screenshot({
+    path: "docs/screenshots/capture-desktop.png",
+    fullPage: true,
+  });
+  let releaseHistory!: () => void;
+  const historyGate = new Promise<void>((resolve) => {
+    releaseHistory = resolve;
+  });
+  await page.route("**/api/workspaces/*/assistant", async (route) => {
+    if (route.request().method() !== "GET") return route.continue();
+    await historyGate;
+    await route.fulfill({ json: [] });
+  });
+  await page.getByRole("button", { name: "AI assistant", exact: true }).click();
+  await expect(page.getByLabel("Message your assistant")).toBeDisabled();
+  releaseHistory();
+  await expect(page.getByLabel("Message your assistant")).toBeEnabled();
+  expect(
+    await page.evaluate(() =>
+      (window as unknown as { testStream: MediaStream }).testStream
+        .getTracks()
+        .every((t) => t.readyState === "ended"),
+    ),
+  ).toBeTruthy();
+  await page.getByLabel("Message your assistant").fill("What should I review?");
+  await expect(
+    page.getByRole("button", { name: "Send", exact: true }),
+  ).toBeDisabled();
+  await page.screenshot({
+    path: "docs/screenshots/assistant-desktop.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBeTruthy();
+  await page.screenshot({
+    path: "docs/screenshots/assistant-mobile.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 1280, height: 720 });
   await page
     .getByRole("button", { name: "Team & training", exact: true })
     .click();

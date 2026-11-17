@@ -30,3 +30,7 @@ Run only one replica. The queue is database-backed but does not implement distri
 Implement email verification/password recovery, storage quotas and retention/deletion management; validate HTTPS and reverse-proxy settings; perform backup restore and independent security tests; choose malware scanning and content retention policies. Existing auth, role and tenant checks are useful foundations, not a production certification.
 
 GitHub Actions in `.github/workflows/check.yml` runs tests, build, browser verification and dependency audit after push. Its hosted execution has not been observed here.
+
+## Mobile and provider readiness
+
+Publish behind HTTPS for mobile camera/microphone APIs. Test on the intended phones and USB cameras; browser speech recognition and scanner-export interfaces are device-dependent. Configure the chosen provider and billing before enabling paid analysis. Set usage budgets in the provider console. Sampled guidance and browser voice are framework integrations, not validated continuous realtime monitoring.

@@ -22,15 +22,20 @@ For development, run `npm run dev` and open http://127.0.0.1:5173. The Vite prox
 
 - Register, sign in and out; create and switch private workspaces.
 - Add registered users as members or reviewers; workspace owners approve procedures.
-- Upload JPG, PNG, WebP, MP4, WebM, TXT and Markdown. View private images and videos; download original documents.
+- Upload JPG, PNG, WebP, MP4, WebM, PDF, TXT and Markdown. View private images and videos; download original documents.
 - Opt into automatic analysis for general operations: summary, source-cited checklist, knowledge questions and evidence gaps.
 - Edit drafts, submit for review, approve, create revisions, export Markdown.
 - Assign approved procedures and acknowledge training. Assignments preserve the original approved content.
 - Record journal entries and inspect the activity history.
+- Turn analyzed sources into lesson drafts; publish from approved procedures and save private learner progress.
+- Capture phone/USB camera photos, import scanner PDFs, and opt into sampled visual practice guidance.
+- Ask a private text assistant about reviewed workspace material, with optional browser dictation and spoken replies.
+- See proactive reminders based on pending training, reviews and source processing issues.
+- Use the Midnight Fieldwork dark interface on desktop and mobile.
 
 ## Enable AI
 
-Copy `.env.example` to `.env`, set `ANTHROPIC_API_KEY`, and restart. Existing environment variables are also read. A funded Anthropic account is required. In the app, select **Turn this into a useful draft** while uploading. Existing files can be processed using **Analyze source**.
+Copy `.env.example` to `.env`, set `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`, and restart. Existing environment variables are also read. A funded provider account is required. `AI_PROVIDER=auto` prefers OpenAI when both keys exist; explicit `openai` or `anthropic` selects one. In the app, select **Turn this into a useful draft** while uploading. Existing files can be processed using **Analyze source**.
 
 The live provider smoke test on this build was rejected because the configured account had insufficient credit. Provider integration exists, but a successful live generation has **not** been verified. Deterministic worker tests exercise successful draft creation without external billing. API keys are never sent to the browser or stored in Git.
 
@@ -50,6 +55,7 @@ Tests cover workspace access, auth, workflow permissions, approved snapshots, so
 
 ## Documentation
 
+- [Learning, capture, voice and AI setup](docs/LEARNING-AND-AI.md)
 - [Getting started](docs/GETTING-STARTED.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Configuration](docs/CONFIGURATION.md)
